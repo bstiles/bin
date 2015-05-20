@@ -1,0 +1,14 @@
+#!/bin/bash
+
+rsync --archive --delete ~/Development/Projects/rp/classes/com/nsa/releaseplanning/ ~/Development/Servers/tmp/njb/server/default/deploy/ReleasePlan.ear/Enterprise.war/WEB-INF/classes/com/nsa/releaseplanning/
+rsync -C --archive --delete ~/Development/Projects/rp/classes/com/nsa/releaseplanning/ 192.168.1.11:/home/data/Development/Servers/tmp/njb/server/default/deploy/ReleasePlan.ear/Enterprise.war/WEB-INF/classes/com/nsa/releaseplanning/
+
+cp ~/Development/Projects/rp/wlserver/config/mydomain/templates/sql.properties ~/Development/Servers/tmp/njb/bin/cfgs
+scp -C -i ~/.ssh/id_dsa ~/Development/Projects/rp/wlserver/config/mydomain/templates/sql.properties 192.168.1.11:/home/data/Development/Servers/tmp/njb/bin/cfgs
+
+cp ~/Development/Projects/rp/wlserver/config/mydomain/templates/DAC-conf.xml ~/Development/Servers/tmp/njb/bin/cfgs
+scp -C -i ~/.ssh/id_dsa ~/Development/Projects/rp/wlserver/config/mydomain/templates/DAC-conf.xml 192.168.1.11:/home/data/Development/Servers/tmp/njb/bin/cfgs
+
+rsync --archive ~/Sites/list/ /Users/bstiles/Development/Servers/tmp/njb/server/default/deploy/ReleasePlan.ear/Enterprise.war/releaseplanning/
+rsync -C --archive --delete ~/Sites/list/ 192.168.1.11:/home/data/Development/Servers/tmp/njb/server/default/deploy/ReleasePlan.ear/Enterprise.war/releaseplanning/
+

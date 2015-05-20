@@ -1,0 +1,72 @@
+#!/bin/bash
+
+function get_zip_file_name {
+    while (echo "$1" | grep -q '^-')
+    do
+        shift
+    done
+    echo "$1"
+}
+
+function modify_args {
+    replacement_file="$1"
+    shift
+    while (echo "$1" | grep -q '^-')
+    do
+        modified_args=("${modified_args[@]}" "$1")
+        shift
+    done
+    modified_args=("${modified_args[@]}" "$replacement_file")
+    shift
+    while [ $# -gt 0 ]
+    do
+        modified_args=("${modified_args[@]}" "$1")
+        shift
+    done
+}
+
+HEADER_ATTR="net.bstiles.irise-zip.header-file"
+DATA_ATTR="net.bstiles.irise-zip.data-file"
+file_name="$(get_zip_file_name "$@")"
+
+if [ "$(basename "$0")" = "irise-unzip" -o "$(basename "$0")" = "irise-unzip.sh" ]
+then
+    header_size=
+    if (echo "$file_name" | grep -q '\.i[Bb]loc$')
+    then
+        header_size=15
+    elif (echo "$file_name" | grep -q '\.i[Dd]oc$')
+    then
+        header_size=16
+    fi
+    if [ -n "$header_size" ]
+    then
+        mkdir -p /tmp/irise-zip
+        header_file="$(xattr -p "$HEADER_ATTR" "$file_name" 2> /dev/null)"
+        [ -n "$header_file" ] || header_file="/tmp/irise-zip/$(basename "$file_name").header$$"
+        data_file="$(xattr -p "$DATA_ATTR" "$file_name" 2> /dev/null)"
+        [ -n "$data_file" ] || data_file="/tmp/irise-zip/$(basename "$file_name").data$$"
+        xattr -w "$HEADER_ATTR" "$header_file" "$file_name"
+        xattr -w "$DATA_ATTR" "$data_file" "$file_name"
+        head -c "$header_size" "$file_name" > "$header_file"
+        tail -c "+$header_size" "$file_name" | tail -c +2 > "$data_file"
+        modified_args=()
+        modify_args "$data_file" "$@"
+        unzip "${modified_args[@]}"
+    else
+        unzip "$@"
+    fi
+else
+    header_file="$(xattr -p "$HEADER_ATTR" "$file_name" 2> /dev/null)"
+    data_file="$(xattr -p "$DATA_ATTR" "$file_name" 2> /dev/null)"
+    if [ -n "$header_file" ]
+    then
+        modified_args=()
+        modify_args "$data_file" "$@"
+        zip "${modified_args[@]}"
+        cat "$header_file" "$data_file" > "$file_name"
+        #exit 1
+    else
+        zip "$@"
+    fi
+fi

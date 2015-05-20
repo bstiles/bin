@@ -1,0 +1,4 @@
+#!/bin/bash
+# 2013-07-23 bstiles: Force UTF8. psql under emacs behaves badly otherwise.
+export PGCLIENTENCODING=UTF8
+exec psql "$@"

@@ -1,0 +1,86 @@
+#!/bin/bash
+shopt -s extglob
+
+function abort {
+    if [ -n "$1" ]; then
+        echo "$1"
+    fi
+    exit 1
+}
+
+asking_for_help=false
+case "$1" in
+    --help|-h)
+        asking_for_help=true
+        ;;
+esac
+
+here="$(cd "$(dirname "$0")";pwd)"
+
+DEFAULT_MAX_SEARCH_DEPTH="3"
+function display_help {
+    echo "usage: $(basename "$0") find_args [--banner] [--depth-last] args..."
+    echo "    --banner        Display a banner showing the project dir for each project"
+    echo "    --depth-last    Do shallow dirs first (default is depth first)"
+    echo "    args...         Args to pass on to hg for each project"
+    echo
+    echo "Finds each project in the current working directory and below"
+    echo "and executes 'args...' in with the project root as the current"
+    echo "working dir.  Projects are operated on depth-first."
+    echo
+    echo "Only searches for project to a max depth of $DEFAULT_MAX_SEARCH_DEPTH"
+    echo "from the starting point."
+}
+
+if [ $asking_for_help = true ]; then
+    display_help
+    exit 0
+fi
+
+if [ $# -lt 1 ]; then
+    abort "Missing findargs."
+fi
+
+FIND_ARGS="$1"
+shift
+
+banner=
+if [ "$1x" = "--bannerx" ]; then
+    banner=true
+    shift
+fi
+
+sort_switch=-r
+if [ "$1x" = "--depth-lastx" ]; then
+    sort_switch=
+    shift
+fi
+
+depth="$DEFAULT_MAX_SEARCH_DEPTH"
+
+start_dir="$PWD"
+
+find . -maxdepth "$depth" ${FIND_ARGS} -print0 | sort -z $sort_switch | while read -d $'\0' x
+do
+    pushd "$(dirname "$x")" > /dev/null
+    if [ -z "$banner" ]; then
+        env "$@"
+    else
+        # 2010-04-06 bstiles: use of this trick kills color display
+        # capture="/tmp/$(basename "$0")-$$.capture"
+        # env "$@" 2>&1 | tee "$capture"
+        # if [ -s "$capture" -a -n "$banner" ]; then
+        #     echo "^"
+        #     echo "|  FROM:${PWD/$start_dir/.}"
+        #     echo "\_______________________________________________________________________________"
+        #     echo
+        # fi
+        # rm "$capture"
+        
+        echo " _______________________________________________________________________________"
+        echo "/ DO: $* IN: ${PWD/$start_dir/.}"
+        echo "|"
+        env "$@"
+    fi
+    popd > /dev/null
+done

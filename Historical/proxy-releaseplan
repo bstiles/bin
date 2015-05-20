@@ -1,0 +1,3 @@
+#!/bin/bash
+
+ssh -l wsup -C -L 3000:localhost:3000 64.79.169.173

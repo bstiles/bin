@@ -1,0 +1,74 @@
+#!/bin/bash
+shopt -s extglob
+
+if [ -n "$(cd . 2>&1)" ]; then
+    echo "Can't run ${BASH_SOURCE[0]} from a non-existent directory!"
+    exit 1
+fi
+
+ENV_FILE="$(basename "$0").env"
+
+pushes=()
+function push {
+    pushd "$1" > /dev/null
+    pushes=(${pushes[@]} ".")
+}
+
+until [ "$PWD" = "/" ]; do
+    push ..
+done
+if [ -f "$ENV_FILE" ]; then
+    . "$ENV_FILE"
+fi
+for x in "${pushes[@]}"; do
+    popd > /dev/null
+    if [ -f "$ENV_FILE" ]; then
+        . "$ENV_FILE"
+    fi
+done
+
+# Profiles can't have spaces in the names
+function add_profiles() {
+    declare -a existing
+    declare -a to_add
+    existing=($(echo $1 | sed -e 's/,/ /g'))
+    to_add=($(echo $2 | sed -e 's/,/ /g'))
+    for x in ${existing[@]}; do
+        to_add=(${to_add[@]//$x})
+    done
+    existing=(${existing[@]} ${to_add[@]})
+    echo "${existing[*]}" | sed -e 's/ /,/g'
+}
+
+declare -a args
+args=()
+profiles_specified="false"
+while [ "$#" -gt 0 ]; do
+    if [ -n "$LEIN_PROFILES" -a "$1" = "with-profile" ]; then
+        profiles_specified="true"
+        args=("${args[@]}" "with-profile")
+        args=("${args[@]}" $(add_profiles "$2" "$LEIN_PROFILES"))
+        shift
+        shift
+    else
+        args=("${args[@]}" "$1")
+        shift
+    fi
+done
+if [ "$profiles_specified" = "false" -a -n "$LEIN_PROFILES" ]; then
+    args=("with-profile" "$LEIN_PROFILES" "${args[@]}")
+fi
+
+"$HOME/bin/on-the-path/lein" "${args[@]}"
+
+exit_status=$?
+message="Lein succeeded."
+sound="/System/Library/Sounds/Ping.aiff"
+if [ $exit_status -ne 0 ]; then
+    sound="/System/Library/Sounds/Basso.aiff"
+    message="Lein FAILED!"
+fi
+/usr/bin/afplay "$sound"
+growlnotify -m "$message"
+
+exit $exit_status

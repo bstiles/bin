@@ -1,0 +1,3 @@
+#!/bin/bash
+
+rsync --archive --delete ~/Development/Projects/rp/src/applications/releaseplan/javascript/server/ ~/Development/Projects/rp/build.output/distribution/deploy-exploded/ReleasePlan.ear/Enterprise.war/javascript/server/

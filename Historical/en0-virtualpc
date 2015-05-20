@@ -1,0 +1,13 @@
+#!/bin/bash
+
+if [ "$1x" = "upx" ]; then
+    /sbin/ifconfig en0 inet 192.168.0.156 netmask 255.255.255.0 alias
+    /sbin/ifconfig en0 media 100baseTX
+    /sbin/ifconfig en0 mediaopt hw-loopback
+elif [ "$1x" = "downx" ]; then
+    /sbin/ifconfig en0 -mediaopt hw-loopback
+    /sbin/ifconfig en0 media autoselect
+    /sbin/ifconfig en0 inet 192.168.0.156 netmask 255.255.255.0 -alias
+else
+    echo "usage: $0 up|down"
+fi

@@ -1,0 +1,63 @@
+#!/bin/bash
+shopt -s extglob
+
+function usage {
+    echo "usage: $(basename "$0") [instance]"
+    exit 0
+}
+function abort {
+    echo "Abort!"
+    exit 1
+}
+
+[[ $1 == +(-h|--help) ]] && usage
+
+. /Volumes/ec2/bin/setup-ec2-env.sh
+
+if [ $# -eq 1 ]; then
+    change-host "$1" || abort
+else
+    change-host default
+fi
+
+HERE="$(dirname "$0")"
+DROP_BOX="/Volumes/AMP Documents/Drop Box"
+
+if [ -z "$MY_EC2_HOST" ]; then
+   echo "MY_EC2_HOST not set!"
+   exit 1
+fi
+
+rsync \
+-e "ssh -i $MY_EC2_HOST_KEY -l ubuntu" \
+--archive \
+--backup \
+--suffix=.bak \
+--progress \
+--partial \
+--compress \
+--stats \
+--human-readable \
+--log-file="/tmp/$(basename $0).log" \
+$MY_EC2_HOST:/data/files/ "$DROP_BOX"
+echo "###########################################################"
+echo "## LIST OF FILES IN /data/files"
+echo "###########################################################"
+ssh -i $MY_EC2_HOST_KEY -l root $MY_EC2_HOST ls -lh /data/files
+
+declare -a ENCRYPTED
+for x in "$DROP_BOX"/*.zip; do
+    case "$x" in
+        *-decrypted.zip)
+            ;;
+        *)
+            if [ ! -e "${x}-decrypted.zip" ]; then
+                ENCRYPTED=("${ENCRYPTED[@]}" "$x")
+            fi
+            ;;
+    esac
+done
+
+if [ ${#ENCRYPTED[@]} -gt 0 ]; then
+    "$HERE"/decrypt-to-zip "${ENCRYPTED[@]}"
+fi

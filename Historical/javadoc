@@ -1,0 +1,9 @@
+#!/usr/bin/env clj-ng
+
+(eval `(clojure.java.javadoc/javadoc ~(read-string (first *command-line-args*))))
+
+;; Call $exit when not using nailgun
+
+;; Local Variables:
+;; mode: clojure
+;; End:

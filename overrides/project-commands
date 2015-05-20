@@ -1,0 +1,19 @@
+#!/bin/bash
+shopt -s extglob
+
+if [ -n "$(cd . 2>&1)" ]; then
+    echo "Can't run ${BASH_SOURCE[0]} from a non-existent directory!"
+    exit 1
+fi
+
+SCRIPT=$(basename "$0")
+
+until [ "$PWD" = "/" ]; do
+    if [ -x "$SCRIPT" ]; then
+        exec "./$SCRIPT" "$@"
+    fi
+    cd ..
+done
+
+echo "Couldn't find $SCRIPT executable. Are you in a project?"
+exit 1

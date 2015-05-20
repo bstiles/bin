@@ -1,0 +1,5 @@
+Testsuite: com.martiansoftware.nailgun.TestNGInputStream
+Tests run: 2, Failures: 0, Errors: 0, Time elapsed: 0.272 sec
+
+Testcase: testNGInputStreamIntoArray took 0.23 sec
+Testcase: testNGInputStreamCharByChar took 0.001 sec

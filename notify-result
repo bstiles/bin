@@ -1,0 +1,60 @@
+#!/bin/bash
+shopt -s extglob
+
+here=$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)
+
+function abort {
+    [ $# -gt 0 ] && echo "$*"
+    exit 1
+}
+
+function display_help {
+    echo "usage: $(basename "$0") [--no-sound] [--no-banner] command [arg..]"
+    echo "  --no-sound      Disable sound."
+    echo "  --no-banner     Disable Notification Center banner."
+    echo
+    echo "Runs COMMAND with any supplied ARGs and notifies"
+    echo "the success or failure of the command audibly and"
+    echo "with a Notification Center banner."
+    echo
+    echo "If Growl is not installed, only audible notification"
+    echo "will be performed."
+}
+
+function abort_and_display_help {
+    display_help
+    abort "$@"
+}
+
+[[ "$1" = @(--help|-h) ]] && display_help && exit 0
+
+audible="true"
+banner="true"
+
+[[ "$1" = "--no-sound" ]] && { audible="false"; shift; }
+[[ "$1" = "--no-banner" ]] && { banner="false"; shift; }
+# In case --no-sound follows --no-banner
+[[ "$1" = "--no-sound" ]] && { audible="false"; shift; }
+
+set -o nounset
+
+"$@"
+exit_status=$?
+
+# 2014-11-28 bstiles: For tmux usage
+# https://github.com/alloy/terminal-notifier/issues/115
+run=/usr/local/bin/reattach-to-user-namespace
+message="$(basename $1) succeeded. Rejoice!"
+sound="/System/Library/Sounds/Ping.aiff"
+notifier="$HOME/bin/Success.app/Contents/MacOS/terminal-notifier"
+if [ $exit_status -ne 0 ]; then
+    sound="/System/Library/Sounds/Basso.aiff"
+    message="$(basename $1) FAILED. Fix it!"
+    notifier="$HOME/bin/Failure.app/Contents/MacOS/terminal-notifier"
+fi
+[ "$audible" = "true" ] \
+  && afplay "$sound"
+[ "$banner" = "true" ] \
+  && "$run" "$notifier" -title "Build" -group "Build Result" -message "$message" 2>&1 > /dev/null
+
+exit $exit_status

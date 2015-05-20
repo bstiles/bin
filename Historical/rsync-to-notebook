@@ -1,0 +1,4 @@
+#!/bin/bash
+. "$(dirname "$0")"/init.sh
+
+rsync-to $(bstiles-xp.address) projects

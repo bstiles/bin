@@ -1,0 +1,44 @@
+#!/bin/bash
+set -o errexit -o pipefail -o nounset
+shopt -s extglob
+unset CDPATH
+
+declare -ir ERR_GENERAL=1
+declare -ir ERR_BAD_CMD_LINE=113
+declare -ir ERR_PRECONDITION_VIOLATED=112
+declare -ir ERR_MAX_LINK_DEPTH_EXCEEDED=111
+declare -ir ERR_CMD_NOT_FOUND=110
+declare -ir ERR_NON_EXISTENT_DIR=109
+# Use 64-108 for other exit codes.
+
+declare -r here=$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)
+
+display_help() {
+cat <<EOF
+usage: $(basename "$0") [opts]
+
+-h|--help        Displays usage information.
+
+DESCRIPTION                                        << EDIT DESCRIPTION
+EOF
+}
+require() {
+    eval [[ \$\{${1:?require was called without arguments!}-\} ]] \
+         '||' abort \$ERR_BAD_CMD_LINE \$\{2-\$1 is required!\} \$\{*:3\}
+}
+abort() {
+    local -i err_code=${1:?abort called without err_code}
+    (( err_code == ERR_BAD_CMD_LINE )) && {
+        display_help; echo; echo "-- ABORTED:"
+    }
+    shift; (( $# > 0 )) && echo "$*" >&2
+    exit $err_code
+}
+
+# Handle help
+[[ ${1-} == @(--help|-h) ]] && { display_help; exit 0; }
+
+# Require argument
+# (( $# )) && abort $ERR_BAD_CMD_LINE #      << ADD MESSAGE
+# # or
+# require bar

@@ -1,0 +1,28 @@
+#!/bin/bash
+shopt -s extglob
+set -o errexit
+
+here=$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)
+
+function abort {
+    [ $# -gt 0 ] && echo "$*"
+    exit 1
+}
+
+function display_help {
+cat <<EOF
+usage: $(basename "$0")
+Runs emacsclient -n "$$@"
+EOF
+}
+
+function abort_and_display_help {
+    display_help && echo
+    abort "$@"
+}
+
+[[ "$1" = @(--help|-h) ]] && display_help && exit 0
+
+set -o nounset
+
+emacsclient -n "$@"

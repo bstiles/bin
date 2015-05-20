@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple Computer//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>command</key>
+	<dict>
+		<key>actionID</key>
+		<string>FileOpenAction</string>
+		<key>directArchive</key>
+		<dict>
+			<key>data</key>
+			<dict>
+				<key>NSFilenamesPboardType</key>
+				<array>
+					<string>/Users/bstiles/bin/Quicksilver/Open Dictionary.qscommand</string>
+					<string>/Users/bstiles/bin/Quicksilver/Open Aquamacs.qscommand</string>
+					<string>/Users/bstiles/bin/Quicksilver/Open iCal.qscommand</string>
+					<string>/Users/bstiles/bin/Quicksilver/Open Mail.qscommand</string>
+					<string>/Users/bstiles/bin/Quicksilver/Open Safari.qscommand</string>
+					<string>/Users/bstiles/bin/Quicksilver/Open Terminal.qscommand</string>
+				</array>
+			</dict>
+			<key>properties</key>
+			<dict>
+				<key>QSObjectDetails</key>
+				<string>Open Dictionary.qscommand, Open Aquamacs.qscommand, Open iCal.qscommand, Open Mail.qscommand, Open Safari.qscommand, Open Terminal.qscommand</string>
+				<key>QSObjectName</key>
+				<string>Startup extra apps</string>
+				<key>QSObjectObjectID</key>
+				<string>/Users/bstiles/bin/Quicksilver/Open Dictionary.qscommand /Users/bstiles/bin/Quicksilver/Open Aquamacs.qscommand /Users/bstiles/bin/Quicksilver/Open iCal.qscommand /Users/bstiles/bin/Quicksilver/Open Mail.qscommand /Users/bstiles/bin/Quicksilver/Open Safari.qscommand /Users/bstiles/bin/Quicksilver/Open Terminal.qscommand</string>
+				<key>QSObjectType</key>
+				<string>NSFilenamesPboardType</string>
+			</dict>
+		</dict>
+		<key>directID</key>
+		<string>/Users/bstiles/bin/Quicksilver/Open Dictionary.qscommand /Users/bstiles/bin/Quicksilver/Open Aquamacs.qscommand /Users/bstiles/bin/Quicksilver/Open iCal.qscommand /Users/bstiles/bin/Quicksilver/Open Mail.qscommand /Users/bstiles/bin/Quicksilver/Open Safari.qscommand /Users/bstiles/bin/Quicksilver/Open Terminal.qscommand</string>
+	</dict>
+</dict>
+</plist>

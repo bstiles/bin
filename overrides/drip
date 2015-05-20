@@ -1,0 +1,5 @@
+#!/bin/bash
+
+here=$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)
+
+MAKE_QUIETLY=true $(which -a drip | grep -v "$here/$(basename "$0")" | head -1) "$@"

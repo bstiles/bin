@@ -1,0 +1,48 @@
+#!/bin/bash
+shopt -s extglob
+
+function abort {
+    if [ -n "$1" ]; then
+        echo "$1"
+    fi
+    exit 1
+}
+
+here="$(cd "$(dirname "$0")";pwd)"
+
+## END TEMPLATE
+
+SRC_VOLUME="/Volumes/default"
+DEST="/Volumes/External/repository-mirror"
+
+rsync \
+--exclude=.DS_Store \
+--delete \
+--archive \
+--progress \
+--stats \
+--human-readable \
+"${SRC_VOLUME}/apps" \
+"${SRC_VOLUME}/lib" \
+"${DEST}"
+
+cd "${DEST}"
+hg commit --addremove --message "Commit."
+
+SRC_VOLUME="/Volumes/default-1"
+DEST="/Volumes/External/repository-1-mirror"
+
+rsync \
+--exclude=.DS_Store \
+--delete \
+--archive \
+--progress \
+--stats \
+--human-readable \
+"${SRC_VOLUME}/apps" \
+"${SRC_VOLUME}/lib" \
+"${DEST}"
+
+cd "${DEST}"
+hg commit --addremove --message "Commit."
+

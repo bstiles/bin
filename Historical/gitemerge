@@ -1,0 +1,37 @@
+#!/bin/bash
+shopt -s extglob
+
+function abort {
+    if [ -n "$1" ]; then
+        echo "$1"
+    fi
+    exit 1
+}
+
+asking_for_help=false
+case "$1" in
+    --help|-h)
+        asking_for_help=true
+        ;;
+esac
+
+here="$(cd "$(dirname "$0")";pwd)"
+
+function display_help {
+    echo "usage: $(basename "$0")"
+}
+
+if [ $asking_for_help = true ]; then
+    display_help
+    exit 0
+fi
+
+## END TEMPLATE
+
+LOCAL="$1"
+REMOTE="$2"
+BASE="$3"
+MERGED="$4"
+#emacsclient --create-frame --eval "(emerge-files-with-ancestor nil \"$LOCAL\" \"$REMOTE\" \"$BASE\" \"$MERGED\")"
+emacsclient --create-frame --eval "(ediff-merge-files-with-ancestor \"$LOCAL\" \"$REMOTE\" \"$BASE\" nil \"$MERGED\")"
+exit $?

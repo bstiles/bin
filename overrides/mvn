@@ -1,0 +1,66 @@
+#!/bin/bash
+shopt -s extglob
+
+if [ -n "$(cd . 2>&1)" ]; then
+    echo "Can't run ${BASH_SOURCE[0]} from a non-existent directory!"
+    exit 1
+fi
+
+ENV_FILE="$(basename "$0").env"
+
+MAVEN_USER_SETTINGS=(--settings "$HOME/.m2/settings.xml")
+USER_HOME="$HOME"
+export JAVA_HOME="$(/usr/libexec/java_home -version 1.7)"
+
+pushes=()
+function push {
+    pushd "$1" > /dev/null
+    pushes=(${pushes[@]} ".")
+}
+
+function peek {
+    while [ $# -gt 0 ]; do
+        case "$1" in
+            --help|-h|--settings|-s)
+                MAVEN_USER_SETTINGS=()
+                ;;
+            --file|-f)
+                shift
+                push "$(dirname "$1")"
+                ;;
+        esac
+        shift
+    done
+}
+peek "$@"
+
+if [ -n "${MAVEN_USER_SETTINGS[*]}" ]; then
+    until [ "$PWD" = "/" ]; do
+        if [ -f "$ENV_FILE" ]; then
+            . "$ENV_FILE"
+        fi
+        if [ -f settings.xml ]; then
+            MAVEN_USER_SETTINGS[1]="$PWD/settings.xml"
+            break
+        fi
+        push ..
+    done
+    for x in "${pushes[@]}"; do
+        popd > /dev/null
+    done
+fi
+
+mvn=mvn
+/usr/local/bin/$mvn "-Duser.home=$HOME" "${MAVEN_USER_SETTINGS[@]}" "$@"
+
+exit_status=$?
+message="Build succeeded."
+sound="/System/Library/Sounds/Ping.aiff"
+if [ $exit_status -ne 0 ]; then
+    sound="/System/Library/Sounds/Basso.aiff"
+    message="Build FAILED!"
+fi
+/usr/bin/afplay "$sound"
+growlnotify -m "$message"
+
+exit $exit_status

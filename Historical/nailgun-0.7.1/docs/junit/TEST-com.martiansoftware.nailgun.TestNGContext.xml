@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<testsuite errors="2" failures="0" hostname="Brian-Stiles-MacBook-Pro.local" name="com.martiansoftware.nailgun.TestNGContext" tests="5" time="0.456" timestamp="2011-04-07T06:00:26">
+  <properties>
+    <property name="java.vendor" value="Apple Inc." />
+    <property name="sun.java.launcher" value="SUN_STANDARD" />
+    <property name="jikes.class.path" value=":/System/Library/Frameworks/JavaVM.framework/Home/../Classes/alt-rt.jar:/System/Library/Frameworks/JavaVM.framework/Home/../Classes/alt-string.jar:/System/Library/Frameworks/JavaVM.framework/Home/../Classes/charsets.jar:/System/Library/Frameworks/JavaVM.framework/Home/../Classes/classes.jar:/System/Library/Frameworks/JavaVM.framework/Home/../Classes/dt.jar:/System/Library/Frameworks/JavaVM.framework/Home/../Classes/jce.jar:/System/Library/Frameworks/JavaVM.framework/Home/../Classes/jconsole.jar:/System/Library/Frameworks/JavaVM.framework/Home/../Classes/jsse.jar:/System/Library/Frameworks/JavaVM.framework/Home/../Classes/management-agent.jar:/System/Library/Frameworks/JavaVM.framework/Home/../Classes/ui.jar" />
+    <property name="sun.management.compiler" value="HotSpot 64-Bit Server Compiler" />
+    <property name="dist" value="dist" />
+    <property name="os.name" value="Mac OS X" />
+    <property name="sun.boot.class.path" value="/System/Library/Java/JavaVirtualMachines/1.6.0.jdk/Contents/Classes/jsfd.jar:/System/Library/Java/JavaVirtualMachines/1.6.0.jdk/Contents/Classes/classes.jar:/System/Library/Frameworks/JavaVM.framework/Frameworks/JavaRuntimeSupport.framework/Resources/Java/JavaRuntimeSupport.jar:/System/Library/Java/JavaVirtualMachines/1.6.0.jdk/Contents/Classes/ui.jar:/System/Library/Java/JavaVirtualMachines/1.6.0.jdk/Contents/Classes/laf.jar:/System/Library/Java/JavaVirtualMachines/1.6.0.jdk/Contents/Classes/sunrsasign.jar:/System/Library/Java/JavaVirtualMachines/1.6.0.jdk/Contents/Classes/jsse.jar:/System/Library/Java/JavaVirtualMachines/1.6.0.jdk/Contents/Classes/jce.jar:/System/Library/Java/JavaVirtualMachines/1.6.0.jdk/Contents/Classes/charsets.jar" />
+    <property name="build.instrumented" value="build/ant/prod-instrumented" />
+    <property name="java.vm.specification.vendor" value="Sun Microsystems Inc." />
+    <property name="ant.home" value="/opt/local/share/java/apache-ant" />
+    <property name="zip.src" value="nailgun-src-0.7.1.zip" />
+    <property name="java.runtime.version" value="1.6.0_24-b07-334-10M3326" />
+    <property name="last.version" value="0.7.1" />
+    <property name="user.name" value="bstiles" />
+    <property name="build.prod" value="build/ant/prod" />
+    <property name="awt.nativeDoubleBuffering" value="true" />
+    <property name="src.c" value="src/c" />
+    <property name="src.java.test" value="src/java/test" />
+    <property name="user.language" value="en" />
+    <property name="build" value="build/ant" />
+    <property name="nailgun-version.properties" value="src/java/prod/com/martiansoftware/nailgun/nailgun-version.properties" />
+    <property name="sun.boot.library.path" value="/System/Library/Java/JavaVirtualMachines/1.6.0.jdk/Contents/Libraries" />
+    <property name="ant.project.default-target" value="dist" />
+    <property name="ant.project.name" value="nailgun" />
+    <property name="java.version" value="1.6.0_24" />
+    <property name="version" value="0.7.1" />
+    <property name="user.timezone" value="" />
+    <property name="sun.arch.data.model" value="64" />
+    <property name="java.endorsed.dirs" value="/System/Library/Java/JavaVirtualMachines/1.6.0.jdk/Contents/Home/lib/endorsed" />
+    <property name="jar" value="nailgun-0.7.1.jar" />
+    <property name="sun.cpu.isalist" value="" />
+    <property name="docs.javadoc" value="docs/api" />
+    <property name="sun.jnu.encoding" value="MacRoman" />
+    <property name="file.encoding.pkg" value="sun.io" />
+    <property name="file.separator" value="/" />
+    <property name="java.specification.name" value="Java Platform API Specification" />
+    <property name="java.class.version" value="50.0" />
+    <property name="user.country" value="US" />
+    <property name="java.home" value="/System/Library/Java/JavaVirtualMachines/1.6.0.jdk/Contents/Home" />
+    <property name="java.vm.info" value="mixed mode" />
+    <property name="ant.file" value="/Users/bstiles/bin/nailgun-0.7.1/build.xml" />
+    <property name="os.version" value="10.6.7" />
+    <property name="jar.examples" value="nailgun-examples-0.7.1.jar" />
+    <property name="src.java.prod" value="src/java/prod" />
+    <property name="path.separator" value=":" />
+    <property name="java.vm.version" value="19.1-b02-334" />
+    <property name="src.xdocs" value="src/xdocs" />
+    <property name="docs" value="docs" />
+    <property name="ant.library.dir" value="/opt/local/share/java/apache-ant/lib" />
+    <property name="java.awt.printerjob" value="apple.awt.CPrinterJob" />
+    <property name="sun.io.unicode.encoding" value="UnicodeLittle" />
+    <property name="awt.toolkit" value="apple.awt.CToolkit" />
+    <property name="zip" value="nailgun-0.7.1.zip" />
+    <property name="user.home" value="/Users/bstiles" />
+    <property name="java.specification.vendor" value="Sun Microsystems Inc." />
+    <property name="java.library.path" value=".:/Users/bstiles/Library/Java/Extensions:/Library/Java/Extensions:/System/Library/Java/Extensions:/usr/lib/java" />
+    <property name="java.vendor.url" value="http://www.apple.com/" />
+    <property name="java.vm.vendor" value="Apple Inc." />
+    <property name="gopherProxySet" value="false" />
+    <property name="java.runtime.name" value="Java(TM) SE Runtime Environment" />
+    <property name="java.class.path" value="/Users/bstiles/bin/nailgun-0.7.1/build/ant/test:/Users/bstiles/bin/nailgun-0.7.1/build/ant/prod-instrumented:/Users/bstiles/bin/nailgun-0.7.1/build/ant/prod:/Users/bstiles/bin/nailgun-0.7.1/tools/lib/bcel-5.1.jar:/Users/bstiles/bin/nailgun-0.7.1/tools/lib/jakarta-oro-2.0.8.jar:/Users/bstiles/bin/nailgun-0.7.1/tools/lib/java-getopt-1.0.10.jar:/Users/bstiles/bin/nailgun-0.7.1/tools/lib/jcoverage.jar:/Users/bstiles/bin/nailgun-0.7.1/tools/lib/junit.jar:/Users/bstiles/bin/nailgun-0.7.1/tools/lib/log4j-1.2.8.jar:/opt/local/share/java/apache-ant/lib/ant-launcher.jar:/opt/local/share/java/apache-ant/lib/ant.jar:/opt/local/share/java/apache-ant/lib/ant-junit.jar:/opt/local/share/java/apache-ant/lib/ant-junit4.jar" />
+    <property name="ant.version" value="Apache Ant(TM) version 1.8.2 compiled on December 20 2010" />
+    <property name="ant.file.type.nailgun" value="file" />
+    <property name="java.vm.specification.name" value="Java Virtual Machine Specification" />
+    <property name="ant.file.type" value="file" />
+    <property name="java.vm.specification.version" value="1.0" />
+    <property name="sun.cpu.endian" value="little" />
+    <property name="sun.os.patch.level" value="unknown" />
+    <property name="build.debug" value="build/ant/prod-debug" />
+    <property name="docs.jcoverage" value="docs/jcoverage" />
+    <property name="java.io.tmpdir" value="/var/folders/kZ/kZHV349DEHGSQoBtpgkBBk+++TI/-Tmp-/" />
+    <property name="java.vendor.url.bug" value="http://bugreport.apple.com/" />
+    <property name="mrj.build" value="10M3326" />
+    <property name="java.awt.graphicsenv" value="apple.awt.CGraphicsEnvironment" />
+    <property name="os.arch" value="x86_64" />
+    <property name="java.ext.dirs" value="/Users/bstiles/Library/Java/Extensions:/Library/Java/Extensions:/System/Library/Java/Extensions:/System/Library/Java/JavaVirtualMachines/1.6.0.jdk/Contents/Home/lib/ext" />
+    <property name="user.dir" value="/Users/bstiles/bin/nailgun-0.7.1" />
+    <property name="mrj.version" value="1060.1.6.0_24-334" />
+    <property name="docs.junit" value="docs/junit" />
+    <property name="line.separator" value="&#xa;" />
+    <property name="java.vm.name" value="Java HotSpot(TM) 64-Bit Server VM" />
+    <property name="basedir" value="/Users/bstiles/bin/nailgun-0.7.1" />
+    <property name="ant.java.version" value="1.6" />
+    <property name="ant.core.lib" value="/opt/local/share/java/apache-ant/lib/ant.jar" />
+    <property name="file.encoding" value="MacRoman" />
+    <property name="build.test" value="build/ant/test" />
+    <property name="java.specification.version" value="1.6" />
+    <property name="ant.project.invoked-targets" value="dist" />
+    <property name="ant.file.nailgun" value="/Users/bstiles/bin/nailgun-0.7.1/build.xml" />
+  </properties>
+  <testcase classname="com.martiansoftware.nailgun.TestNGContext" name="testNGContextSettersAndGetters" time="0.214">
+    <error message="(class: com/martiansoftware/nailgun/NGServer, method: getDefaultNailClass signature: ()Ljava/lang/Class;) Illegal constant pool index" type="java.lang.VerifyError">java.lang.VerifyError: (class: com/martiansoftware/nailgun/NGServer, method: getDefaultNailClass signature: ()Ljava/lang/Class;) Illegal constant pool index
+	at com.martiansoftware.nailgun.TestNGContext.testNGContextSettersAndGetters(Unknown Source)
+</error>
+  </testcase>
+  <testcase classname="com.martiansoftware.nailgun.TestNGContext" name="testNGContextExit" time="0.0010" />
+  <testcase classname="com.martiansoftware.nailgun.TestNGContext" name="testNGContextLoopbackAssertion" time="0.0030">
+    <error message="Client is not at loopback address." type="java.lang.SecurityException">java.lang.SecurityException: Client is not at loopback address.
+	at com.martiansoftware.nailgun.NGContext.assertLoopbackClient(NGContext.java:241)
+	at com.martiansoftware.nailgun.TestNGContext.testNGContextLoopbackAssertion(Unknown Source)
+</error>
+  </testcase>
+  <testcase classname="com.martiansoftware.nailgun.TestNGContext" name="testNGContextExternalInetAddress" time="0.168" />
+  <testcase classname="com.martiansoftware.nailgun.TestNGContext" name="testNGContextNonLoopbackAssertions" time="0.0090" />
+  <system-out><![CDATA[]]></system-out>
+  <system-err><![CDATA[]]></system-err>
+</testsuite>

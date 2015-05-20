@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple Computer//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>command</key>
+	<dict>
+		<key>actionID</key>
+		<string>FileOpenAction</string>
+		<key>directArchive</key>
+		<dict>
+			<key>data</key>
+			<dict>
+				<key>NSFilenamesPboardType</key>
+				<string>/Applications/iChat.app</string>
+				<key>qs.process</key>
+				<dict>
+					<key>NSApplicationBundleIdentifier</key>
+					<string>com.apple.iChat</string>
+					<key>NSApplicationName</key>
+					<string>iChat</string>
+					<key>NSApplicationPath</key>
+					<string>/Applications/iChat.app</string>
+					<key>NSApplicationProcessIdentifier</key>
+					<integer>8715</integer>
+					<key>NSApplicationProcessSerialNumberHigh</key>
+					<integer>0</integer>
+					<key>NSApplicationProcessSerialNumberLow</key>
+					<integer>16646145</integer>
+				</dict>
+			</dict>
+			<key>properties</key>
+			<dict>
+				<key>QSObjectDetails</key>
+				<string>/Applications/iChat.app</string>
+				<key>QSObjectLabel</key>
+				<string>iChat</string>
+				<key>QSObjectName</key>
+				<string>iChat.app</string>
+				<key>QSObjectObjectID</key>
+				<string>/Applications/iChat.app</string>
+				<key>QSObjectType</key>
+				<string>NSFilenamesPboardType</string>
+			</dict>
+		</dict>
+		<key>directID</key>
+		<string>/Applications/iChat.app</string>
+	</dict>
+</dict>
+</plist>

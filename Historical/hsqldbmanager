@@ -1,0 +1,10 @@
+#!/bin/bash
+. "$(dirname "$0")"/init.sh
+
+etc_dir="$(dirname "$0")/etc"
+CFGFILE="$etc_dir/hsql.conf"
+. "$CFGFILE"
+
+cd "$HSQL_HOME"
+exec "$JAVA_EXECUTABLE" $CLIENT_JVMARGS -cp "${HSQLDB_JAR_PATH}" org.hsqldb.util.DatabaseManagerSwing --rcFile "$AUTH_FILE" "$@"
+

@@ -1,0 +1,18 @@
+#!/bin/bash
+shopt -s extglob
+set -o errexit
+set -o nounset
+unset CDPATH
+
+here=$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)
+
+function abort {
+    [ $# -gt 0 ] && echo "$*"
+    exit 1
+}
+
+LIBEXEC=$(gpgconf --list-dirs | sed -n -e 's/libexecdir:\(.*\)/\1/p')
+CMD="$LIBEXEC/gpg-preset-passphrase"
+[[ -x "$CMD" ]] || abort "Can't find gpg-preset-passphrase."
+
+"$CMD" "$@"

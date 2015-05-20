@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple Computer//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>command</key>
+	<dict>
+		<key>actionID</key>
+		<string>FileOpenAction</string>
+		<key>directArchive</key>
+		<dict>
+			<key>data</key>
+			<dict>
+				<key>NSFilenamesPboardType</key>
+				<string>/Applications/Emacs.app</string>
+				<key>qs.process</key>
+				<dict>
+					<key>NSApplicationBundleIdentifier</key>
+					<string>org.gnu.Emacs</string>
+					<key>NSApplicationName</key>
+					<string>Emacs</string>
+					<key>NSApplicationPath</key>
+					<string>/Applications/Emacs.app</string>
+					<key>NSApplicationProcessIdentifier</key>
+					<integer>302</integer>
+					<key>NSApplicationProcessSerialNumberHigh</key>
+					<integer>0</integer>
+					<key>NSApplicationProcessSerialNumberLow</key>
+					<integer>3145729</integer>
+				</dict>
+			</dict>
+			<key>properties</key>
+			<dict>
+				<key>QSObjectDetails</key>
+				<string>/Applications/Emacs.app</string>
+				<key>QSObjectLabel</key>
+				<string>Emacs</string>
+				<key>QSObjectName</key>
+				<string>Emacs.app</string>
+				<key>QSObjectObjectID</key>
+				<string>/Applications/Emacs.app</string>
+				<key>QSObjectType</key>
+				<string>NSFilenamesPboardType</string>
+			</dict>
+		</dict>
+		<key>directID</key>
+		<string>/Applications/Emacs.app</string>
+	</dict>
+</dict>
+</plist>

@@ -1,0 +1,46 @@
+#!/bin/bash
+shopt -s extglob
+set -o errexit
+
+here=$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)
+real_cmd=$(which -a iet | grep -v "$here/$(basename "$0")" | head -1)
+
+function abort {
+    [ $# -gt 0 ] && echo "$*"
+    exit 1
+}
+
+function display_help {
+cat <<EOF
+usage: $(basename "$0") --sandbox ...
+--sandbox  Configures IET to use the local Sandbox repository for
+           testing passing all remaining args to the real iet command.
+or
+$("$real_cmd" -h)
+EOF
+}
+
+function abort_and_display_help {
+    display_help && echo
+    abort "$@"
+}
+
+[ $# -eq 0 ] || [[ "$1" = @(--help|-h) ]] && display_help && exit 0
+
+if [[ $1 == --sandbox ]]; then
+    shift
+    export IET_REPOS=$(cat <<EOF
+{"sandbox" {:url "file://$HOME/iRise/Sandbox/"
+            :update :always}
+ "irise" {:url "http://repo.eng.irise.com/maven/repo/"
+          :update :always}}
+EOF
+           )
+    # export IET_HOME="$HOME/Library/Application Support/iRise Engineering/Sandy Toolbox"
+    # export IET_LOGS="$HOME/Library/Logs/iRise Engineering/Sandy Toolbox"
+    # real_cmd="$IET_HOME/bin/iet"
+fi
+
+set -o nounset
+
+exec "$real_cmd" "$@"

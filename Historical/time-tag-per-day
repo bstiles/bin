@@ -1,0 +1,69 @@
+#!/usr/bin/env clj-ng
+#_(comment (defenv clj-env
+             (:dependencies [[mcp-core "1.0.0-SNAPSHOT"]])))
+
+(load-file "/Users/bstiles/.clojure.d/swank-init/user.clj")
+(require '[clojure.java.io :as io])
+
+(def data-file (io/file (if *command-line-args*
+                          (first *command-line-args*)
+                          "NO_FILE_SPECIFIED")))
+(def entry-pattern #"\"([^\"]*)\",\"([^\"]*)\",\"([^\"]*)\",[^,]*,[^,]*,\"([^\"]*)\",\"[^\"]*\",\"\"")
+
+;; (defn parse-date
+;;   [text]
+;;   (.parse (java.text.SimpleDateFormat. "MMM dd, yyyy") text))
+
+(defn -run
+  []
+  (if-not (.exists data-file)
+    (println "File does not exist:" data-file)
+    (let [date->category->hours
+          (reduce (fn [date->category->hours delta]
+                    (let [date (nth delta 1)
+                          category (nth delta 3)
+                          hours (Double/parseDouble (nth delta 4))
+                          todays-category->hours (or (date->category->hours date)
+                                                     {})]
+                      (assoc
+                          date->category->hours
+                        date
+                        (assoc
+                            todays-category->hours
+                          category
+                          (if-let [total (todays-category->hours category)]
+                            (+ total hours)
+                            hours)))))
+                  {}
+                  (filter #(> (count %) 0)
+                          (map #(re-find entry-pattern %)
+                               (line-seq (io/reader data-file)))))
+          categories (sort (filter #(not= "" %)
+                                   (seq
+                                    (into #{}
+                                          (mapcat
+                                           keys
+                                           (vals date->category->hours))))))]
+      (apply println (interpose "," (map #(format "\"%s\"" %)
+                                         (apply vector "Date" categories))))
+      (doseq [[date categories->hours] date->category->hours
+              :let [hours-in-day (reduce + 0 (vals (select-keys categories->hours categories)))]]
+        (apply
+         println
+         (interpose
+          ","
+          (apply
+           vector
+           (format "\"%s\"" date)
+           (map #(/ (or (categories->hours %)
+                        0)
+                    hours-in-day)
+                categories))))))))
+
+(-run)
+  
+;; Call $exit when not using nailgun
+
+;; Local Variables:
+;; mode: clojure
+;; End:

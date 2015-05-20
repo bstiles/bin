@@ -1,0 +1,5 @@
+#!/bin/bash
+. "$(dirname "$0")"/init.sh
+. "$(dirname "$0")"/bashrc.tex
+
+pdflatex "$@"

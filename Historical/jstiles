@@ -1,0 +1,28 @@
+screen mode id:i:1
+startdisplay:i:0
+desktop size id:i:4
+desktopwidth:i:1280
+desktopheight:i:768
+autoshowmenu:i:1
+desktopallowresize:i:0
+session bpp:i:15
+winposstr:s:0,3,0,0,800,600
+auto connect:i:0
+full address:s:5.26.66.191
+compression:i:1
+rightclickmodifiers:i:4608
+altkeyreplacement:i:0
+audiomode:i:0
+redirectdrives:i:0
+redirectprinters:i:0
+username:s:Jerry Stiles
+domain:s:
+alternate shell:s:
+shell working directory:s:
+preference flag id:i:2
+disable wallpaper:i:1
+disable full window drag:i:0
+disable menu anims:i:0
+disable themes:i:0
+disable cursor setting:i:0
+bitmapcachepersistenable:i:1

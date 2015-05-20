@@ -1,0 +1,12 @@
+#!/bin/bash
+
+here=$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)
+GS=$(which -a gs | grep -v "$here/$(basename "$0")" | head -1)
+
+if [ -t 0 -a "$TERM" != "dumb" ]; then
+    read -p "Really run gs? (y/N) "
+    [[ $REPLY =~ [yY] ]] && exec $GS "$@"
+    exit 0
+else
+    exec $GS "$@"
+fi

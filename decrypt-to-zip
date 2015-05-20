@@ -1,0 +1,46 @@
+#!/bin/bash
+
+function usage {
+    echo "usage: $(basename "$0") file [file...]"
+}
+
+if [ $# -eq 0 ]; then
+    usage
+    exit 0
+fi
+if [ $# -eq 1 ]; then
+    case $1 in
+        "-h" | "--help")
+            usage
+            exit 0
+            ;;
+    esac
+fi
+
+# java\
+#  \
+# -cp\
+#  \
+# /Users/bstiles/.m2/repository/net/bstiles/net.bstiles.common/1.0.0/net.bstiles.common-1.0.0.jar\
+# :/Users/bstiles/.m2/repository/net/bstiles/net.bstiles.encryption/1.0.0/net.bstiles.encryption-1.0.0.jar\
+# :/Users/bstiles/.m2/repository/net/bstiles/net.bstiles.dropbox/1.0.0/net.bstiles.dropbox-1.0.0.jar\
+#  \
+# net.bstiles.dropbox.commandline.DecryptToZip\
+#  \
+# /Volumes/ec2/pk-dropbox.der\
+#  \
+# "$@"
+
+export JAVA_HOME=/System/Library/Java/JavaVirtualMachines/1.6.0.jdk/Contents/Home
+$JAVA_HOME/bin/java\
+ \
+-cp \
+/Volumes/PowerBook/bstiles/.m2/repository/net/bstiles/net.bstiles.common/1.0.0/net.bstiles.common-1.0.0.jar\
+:/Volumes/PowerBook/bstiles/.m2/repository/net/bstiles/net.bstiles.encryption/1.0.0/net.bstiles.encryption-1.0.0.jar\
+:/Volumes/PowerBook/bstiles/.m2/repository/net/bstiles/net.bstiles.dropbox/1.0.0/net.bstiles.dropbox-1.0.0.jar\
+ \
+net.bstiles.dropbox.commandline.DecryptToZip\
+ \
+/Volumes/ec2/pk-dropbox.der\
+ \
+"$@"

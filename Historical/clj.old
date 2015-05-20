@@ -1,0 +1,207 @@
+#!/bin/bash
+shopt -s extglob
+# set -o errexit
+
+LAUNCHER_CLASSPATH="/Users/bstiles/.m2/repository/args4j/args4j/2.0.12/args4j-2.0.12.jar:/Users/bstiles/.m2/repository/org/aspectj/aspectjrt/1.6.9/aspectjrt-1.6.9.jar:/Users/bstiles/.m2/repository/org/aspectj/aspectjtools/1.6.9/aspectjtools-1.6.9.jar:/Users/bstiles/.m2/repository/org/aspectj/aspectjweaver/1.6.9/aspectjweaver-1.6.9.jar:/Users/bstiles/.m2/repository/net/bstiles/clojure-launcher/1.0.0/clojure-launcher-1.0.0.jar"
+CLOJURE_VERSION="1.2.0"
+CLOJURE_HOME="/Users/bstiles/Development/Library/Clojure/Versions/${CLOJURE_VERSION}"
+CLOJURE_EXT_CLASSPATH="/Users/bstiles/MCP/Projects/mcp-core/src"
+CLOJURE_CLASSPATH="${CLOJURE_HOME}/clojure-${CLOJURE_VERSION}/clojure.jar:${CLOJURE_HOME}/clojure-contrib-${CLOJURE_VERSION}/target/clojure-contrib-${CLOJURE_VERSION}.jar:${CLOJURE_EXT_CLASSPATH}"
+
+function abort {
+    if [ $# -gt 0 ]; then
+        echo "$*"
+    fi
+    exit 1
+}
+
+sans_args=
+function display_help {
+    echo "usage: $(basename "$0") [--debug-port n] [--suspend] [--jdk17] [--system-path classpath] [--parent-path classpath] [--aspect-path classpath] [--weave-path classpath] [--classpath classpath] [-D..] [args...]"
+    echo "--debug-port n     Port on which to listen for debugger."
+    echo "--suspend          Suspends until the debugger connects."
+    echo "--jdk17            Use OpenJDK 1.7."
+    echo "--system-path      Classpath of to be added to the system classpath"
+    echo "                   (can be specified multiple times)."
+    echo "--parent-path      Classpath of to be added to the child of the system"
+    echo "                   classpath and parent of the aspect classpath"
+    echo "                   (can be specified multiple times)."
+    echo "--aspect-path      Classpath of aspects"
+    echo "                   (can be specified multiple times)."
+    echo "--weave-path       Classpath of classes to be woven"
+    echo "                   (can be specified multiple times)."
+    echo "--classpath        Classpath to be added to the base Clojure classpath"
+    echo "                   (can be specified multiple times)."
+    echo "--debug-classptah  Output the paths of each classloader."
+    echo "-D..               Passed to java (can be specified multiple times)."
+    echo "-X..               Passed to java (can be specified multiple times)."
+    echo "-javaagent:..      Passed to java."
+    if [ -z "$sans_args" ]
+    then
+        echo "args...            Subsequent args are passed to clojure.main."
+        echo " \\\\"
+        echo "  \\\\"
+        echo "   VV"
+        java -cp "$CLOJURE_CLASSPATH" clojure.main --help
+    fi
+}
+
+function abort_and_display_help {
+    display_help
+    abort "$@"
+}
+
+asking_for_help=false
+case "$1" in
+    --help|-h)
+        asking_for_help=true
+        ;;
+    --help-sans-args)
+        asking_for_help=true
+        sans_args=true
+        ;;
+esac
+
+here="$(cd -L "$(dirname "$(readlink "$0" || echo "$0")")";pwd)"
+
+if [ $asking_for_help = true ]; then
+    display_help
+    exit 0
+fi
+
+DEBUG_PORT=
+DEBUG_CLASSPATH=
+SUSPEND=n
+CLASSPATH=
+SYSTEM_PATH=
+PARENT_PATH=
+ASPECT_PATH=
+WEAVE_PATH=
+JAVA_OPTS=(-server)
+JAVA=java
+
+while [ $# -gt 0 ]
+do
+    case "$1" in
+        --debug-port)
+            [ -z "$2" ] && abort_and_display_help "Malformed optino: no debug port specified."
+            echo "$2" | grep -q -v '[0-9]' && abort "Debug port in not a number: $2"
+            DEBUG_PORT="$2"
+            shift
+            shift
+            ;;
+        --debug-classpath)
+            DEBUG_CLASSPATH=true
+            shift
+            ;;
+        --profile)
+            export DYLD_LIBRARY_PATH=/Applications/YourKit.app/bin/mac
+            JAVA_OPTS=("${JAVA_OPTS[@]}" "-agentlib:yjpagent")
+            shift
+            ;;
+        --suspend)
+            SUSPEND=y
+            shift
+            ;;
+        --jdk17)
+            JAVA="/Users/bstiles/Development/Library/OpenJDK/Versions/1.7-trunk/bsd-port/build/bsd-amd64/bin/java"
+            shift
+            ;;
+        --system-path)
+            [ -z "$2" ] && abort_and_display_help "Malformed option: no system path specified."
+            if [ -z "$SYSTEM_PATH" ]
+            then
+                SYSTEM_PATH="$2"
+            else
+                SYSTEM_PATH="$SYSTEM_PATH:$2"
+            fi
+            shift
+            shift
+            ;;
+        --parent-path)
+            [ -z "$2" ] && abort_and_display_help "Malformed option: no parent path specified."
+            if [ -z "$PARENT_PATH" ]
+            then
+                PARENT_PATH="$2"
+            else
+                PARENT_PATH="$PARENT_PATH:$2"
+            fi
+            shift
+            shift
+            ;;
+        --aspect-path)
+            [ -z "$2" ] && abort_and_display_help "Malformed option: no aspect path specified."
+            if [ -z "$ASPECT_PATH" ]
+            then
+                ASPECT_PATH="$2"
+            else
+                ASPECT_PATH="$ASPECT_PATH:$2"
+            fi
+            shift
+            shift
+            ;;
+        --weave-path)
+            [ -z "$2" ] && abort_and_display_help "Malformed option: no weave path specified."
+            if [ -z "$WEAVE_PATH" ]
+            then
+                WEAVE_PATH="$2"
+            else
+                WEAVE_PATH="$WEAVE_PATH:$2"
+            fi
+            shift
+            shift
+            ;;
+        --classpath)
+            [ -z "$2" ] && abort_and_display_help "Malformed option: no classpath specified."
+            if [ -z "$CLASSPATH" ]
+            then
+                CLASSPATH="$2"
+            else
+                CLASSPATH="$CLASSPATH:$2"
+            fi
+            shift
+            shift
+            ;;
+        -D*|-javaagent*|-X*)
+            JAVA_OPTS=("${JAVA_OPTS[@]}" "$1")
+            shift
+            ;;            
+        *)
+            break
+            ;;
+    esac
+done
+
+xmx=
+xms=
+for opt in "${JAVA_OPTS[@]}"
+do
+    case "$opt" in
+        -Xmx*)
+            xmx="$opt"
+            ;;
+        -Xms*)
+            xms="$opt"
+            ;;
+    esac
+done
+[ -z "$xmx" ] && JAVA_OPTS=("${JAVA_OPTS[@]}" -Xmx256m)
+[ -z "$xms" ] && JAVA_OPTS=("${JAVA_OPTS[@]}" -Xms128m)
+
+set -o nounset
+
+BASE_CLASSPATH="$LAUNCHER_CLASSPATH"
+[ -n "$SYSTEM_PATH" ] && BASE_CLASSPATH="$BASE_CLASSPATH:$SYSTEM_PATH"
+
+[ -n "$CLASSPATH" ] && CLOJURE_CLASSPATH="$CLOJURE_CLASSPATH:$CLASSPATH"
+LAUNCHER_OPTS=("--client-path" "$CLOJURE_CLASSPATH")
+[ -n "$PARENT_PATH" ] && LAUNCHER_OPTS=("${LAUNCHER_OPTS[@]}" "--parent-path" "$PARENT_PATH")
+[ -n "$ASPECT_PATH" ] && LAUNCHER_OPTS=("${LAUNCHER_OPTS[@]}" "--aspect-path" "$ASPECT_PATH")
+[ -n "$WEAVE_PATH" ] && LAUNCHER_OPTS=("${LAUNCHER_OPTS[@]}" "--weave-path" "$WEAVE_PATH")
+[ "$DEBUG_CLASSPATH" = true ] && LAUNCHER_OPTS=("${LAUNCHER_OPTS[@]}" "--debug")
+LAUNCHER_OPTS=("${LAUNCHER_OPTS[@]}" "--")
+
+DEBUG="-Xshare:off -Xdebug -Xrunjdwp:transport=dt_socket,address=$DEBUG_PORT,server=y,suspend=$SUSPEND"
+[ -n "$DEBUG_PORT" ] && JAVA_OPTS=("${JAVA_OPTS[@]}" $DEBUG)
+
+exec $JAVA "${JAVA_OPTS[@]}" -cp "$BASE_CLASSPATH" net.bstiles.tools.clojure.launcher.Main "${LAUNCHER_OPTS[@]}" -e "(use 'mcp-core.sh)" "$@"
