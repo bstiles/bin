@@ -2,7 +2,7 @@
 
 here=$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)
 
-if [ -z ${MAKE_QUIETLY:-} ]; then
+if [[ ${NOTIFY-} ]]; then
     notify-result $(which -a make | grep -v "$here/$(basename "$0")" | head -1) "$@"
 else
     $(which -a make | grep -v "$here/$(basename "$0")" | head -1) "$@"
