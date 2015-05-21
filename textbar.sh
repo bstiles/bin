@@ -12,11 +12,16 @@ declare -ir ERR_NON_EXISTENT_DIR=109
 # Use 64-108 for other exit codes.
 
 declare -r here=$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)
+declare -r VMRUN="/Applications/VMware Fusion.app/Contents/Library/vmrun"
+declare -rx MACHINE_STORAGE_PATH=/Users/bstiles/Machine
+PATH=/usr/local/bin:$PATH
 
 display_help() {
 cat <<EOF
 usage: $(basename "$0") [opts]
 
+vms              Display information about virtual machine usage.
+git              Display information about Git status.
 -h|--help        Displays usage information.
 
 Offers several commands that roduce output for TextBar.
@@ -38,8 +43,6 @@ abort() {
 # Handle help
 [[ $# -eq 0 || ${1-} == @(--help|-h) ]] && { display_help; exit 0; }
 
-VMRUN="/Applications/VMware Fusion.app/Contents/Library/vmrun"
-
 case $1 in
     vms)
         vbox=$(VBoxManage list runningvms)
@@ -49,34 +52,85 @@ case $1 in
                            -e 's/Total running VMs: //' \
                            -e '/^[0-9]+$/ p' \
                            <<< "$vmware")
-        (( vbox_count > 0 )) && echo -n VB:$vbox_count
-        (( vbox_count > 0 && vmware_count > 0 )) && echo -n ", "
-        (( vmware_count > 0 )) && echo -n "VMW: $vmware_count"
-        if (( vbox_count > 0 || vmware_count > 0 )); then
-            echo
+        if (( vbox_count > 0 && vmware_count > 0 )); then
+            echo -n ▞
+        elif (( vbox_count > 0 )); then
+            echo -n ▖
+        elif (( vmware_count > 0 )); then
+            echo -n ▝
         else
-            echo -e "No VMs"
+            echo -n ⋰
         fi
+        if /Users/bstiles/iRise/Projects/bnw/tools/termite \
+               check-docker-host; then
+            echo -n '▐'
+            docker_active=$(/Users/bstiles/iRise/Projects/bnw/tools/docker-host active)
+        fi
+        echo
         (( vbox_count > 0 )) && {
-            echo -e "-- VirtualBox"
+            echo "-- VirtualBox"
             sed -Ee 's/"((.*)_default_[0-9].*"|(.*)").*/\2\3/' <<< "$vbox"
         }
         (( vmware_count > 0 )) && {
-            echo -e "-- VMWare"
+            echo "-- VMWare"
             sed -E \
                 -e '/Total running VMs: / d' \
                 -e 's_(.*VMWare/(.*).vmwarevm.*|.*/([^/]+).vmx$)_\2\3_' \
                 <<< "$vmware"
         }
+        [[ ${docker_active-} ]] && {
+            echo "-- Docker"
+            echo $docker_active
+        }
         ;;
     git)
         git_count=$(cd /Users/bstiles/iRise/Projects/bnw; git status -s | wc -l)
-        echo -n 'BNW: '
         if (( git_count > 0 )); then
-            echo $git_count
+            echo ╪
+            echo "BNW: Git Status"
+            echo "Out of sync"
         else
-            echo •
+            echo ═
+            echo "BNW: Git Status"
+            echo "In sync"
         fi
+        ;;
+    build-status)
+        set +o errexit
+        make_status=$(cd /Users/bstiles/iRise/Projects/bnw;
+                      make --dry-run 2>&1 | grep -v '^make: Nothing to be done')
+        docker_not_configured="Docker host is not configured"
+        if [[ -z $make_status ]]; then
+            status=●
+            make_message="Up to date"
+        elif [[ $make_status =~ $docker_not_configured ]]; then
+            status=•
+            make_message="Docker not configured"
+        else
+            status=○
+            make_message="Out of date"
+        fi
+        if [[ -z $(cd /Users/bstiles/iRise/Projects/bnw;
+                   make no-docker --dry-run | grep -v '^make: Nothing to be done') ]]; then
+            status="$status ●"
+            make_no_docker_message="Up to date"
+        else
+            status="$status ○"
+            make_no_docker_message="Out of date"
+        fi
+        echo "$status"
+        echo "BNW: make"
+        echo "-- all"
+        echo "$make_message"
+        echo "-- no-docker"
+        echo "$make_no_docker_message"
+        ;;
+    textbar-ports)
+        ports=$(top -l 1 | awk '/TextBar/ { print $7 }' | sed -E 's/[^0-9]//g')
+        if (( ports > 1000 )); then
+            echo -en "\033[41;1;37m"
+        fi
+        echo $ports
         ;;
     *)
         abort $ERR_BAD_CMD_LINE "Invalid option: $1"
