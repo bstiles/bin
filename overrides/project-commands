@@ -10,10 +10,15 @@ SCRIPT=$(basename "$0")
 
 until [ "$PWD" = "/" ]; do
     if [ -x "$SCRIPT" ]; then
-        exec "./$SCRIPT" "$@"
+        SCRIPT=$PWD/$SCRIPT
+        break
     fi
-    cd ..
+    pushd .. > /dev/null
 done
+[[ -x $SCRIPT ]] || {
+    echo "Couldn't find $SCRIPT executable. Are you in a project?"
+    exit 1
+}
 
-echo "Couldn't find $SCRIPT executable. Are you in a project?"
-exit 1
+dirs +1 > /dev/null 2>&1 && popd > /dev/null
+exec "$SCRIPT" "$@"

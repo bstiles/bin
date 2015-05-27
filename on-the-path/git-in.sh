@@ -113,7 +113,7 @@ EOF
         ) || cat <<EOF
 $(echo -en ${warn-})\
 ==========
-FAILURE in: $(echo -en ${bright-}; echo -n $PWD; echo -en ${warn-})
+FAILURE in: $(echo -en ${bright-}; (cd "$x"; echo -n $PWD); echo -en ${warn-})
 ==========\
 $(echo -en ${default-})
 EOF

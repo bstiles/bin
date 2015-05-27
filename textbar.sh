@@ -61,8 +61,7 @@ case $1 in
         else
             echo -n ⋰
         fi
-        if /Users/bstiles/iRise/Projects/bnw/tools/termite \
-               check-docker-host; then
+        if /Users/bstiles/iRise/Projects/bnw/tools/check-docker-host; then
             echo -n '▐'
             docker_active=$(/Users/bstiles/iRise/Projects/bnw/tools/docker-host active)
         fi
