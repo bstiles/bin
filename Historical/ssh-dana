@@ -1,5 +1,0 @@
-#!/bin/bash
-. "$(dirname "$0")"/init.sh
-
-ssh -o ServerAliveInterval=30 -C 64.79.169.171 -L 2401:laguna:2401 -L 8444:laguna:8443 "$@"
-growlnotify -m 'Connection terminated' $(basename "$0")

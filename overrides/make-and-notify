@@ -1,0 +1,9 @@
+#!/bin/bash
+
+here=$(cd "${BASH_SOURCE[0]%/*}" && pwd)
+
+if [[ ${NOTIFY-} ]]; then
+    notify-result $(which -a make | grep -v "$here/${0##*/}" | head -1) "$@"
+else
+    $(which -a make | grep -v "$here/${0##*/}" | head -1) "$@"
+fi

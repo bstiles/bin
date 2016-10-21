@@ -75,7 +75,7 @@ main() {
         fi
     fi
 
-    if [[ $(basename -- "$0") = gr ]]; then
+    if [[ ${0##*/} = gr ]]; then
         readarray -t repos < <(find . \
                                     -maxdepth $maxdepth \
                                     -type d \
@@ -102,8 +102,8 @@ main() {
                 cat <<EOF
  _______________________________________________________________________________
 / IN: $(
-echo -en ${bright-}; echo -n $(dirname -- "$PWD")/
-echo -en ${bright-}${bold-}; echo -n $(basename -- "$PWD"); echo -en ${dim-}
+echo -en ${bright-}; echo -n ${PWD%/*}/
+echo -en ${bright-}${bold-}; echo -n ${PWD##*/}; echo -en ${dim-}
 )
 |
 EOF

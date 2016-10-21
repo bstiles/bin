@@ -33,7 +33,7 @@ else
     argnum=0
     while [ $# -gt 0 ]; do
         argnum=$(($argnum + 1))
-        echo "$argnum: ==|$1|=="
+        echo "$argnum: ==|$(printf %s "$1" | cat -e)|=="
         shift
     done
 fi
@@ -41,7 +41,7 @@ if [ -t 0 ]; then
     echo "No stdin!"
 else
     echo -n "stdin: ==|"
-    cat /dev/stdin
+    cat -e /dev/stdin
     echo "|=="
 fi
 

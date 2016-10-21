@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/local/bin/bash
 set -o errexit -o pipefail -o nounset
 shopt -s extglob
 unset CDPATH
@@ -130,6 +130,16 @@ case $1 in
             echo -en "\033[41;1;37m"
         fi
         echo $ports
+        ;;
+    mach-ports)
+        LC_NUMERIC=en_US
+        builtin printf "%'d" \
+               $(top -l 1 -oprt \
+                        | awk '/^[0-9]/{gsub("+","",$7);print $7}' \
+                        | head -10 \
+                        | xargs -n 1 echo + \
+                        | xargs echo 0 \
+                        | bc)
         ;;
     *)
         abort $ERR_BAD_CMD_LINE "Invalid option: $1"

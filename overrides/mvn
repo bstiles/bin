@@ -6,7 +6,7 @@ if [ -n "$(cd . 2>&1)" ]; then
     exit 1
 fi
 
-ENV_FILE="$(basename "$0").env"
+ENV_FILE=${0##*/}.env
 
 MAVEN_USER_SETTINGS=(--settings "$HOME/.m2/settings.xml")
 USER_HOME="$HOME"
@@ -19,7 +19,7 @@ function push {
 }
 
 function peek {
-    while [ $# -gt 0 ]; do
+    while (( $# > 0 )); do
         case "$1" in
             --help|-h|--settings|-s)
                 MAVEN_USER_SETTINGS=()
@@ -34,12 +34,12 @@ function peek {
 }
 peek "$@"
 
-if [ -n "${MAVEN_USER_SETTINGS[*]}" ]; then
-    until [ "$PWD" = "/" ]; do
-        if [ -f "$ENV_FILE" ]; then
+if [[ -n ${MAVEN_USER_SETTINGS[*]} ]]; then
+    until [[ $PWD == / ]]; do
+        if [[ -f $ENV_FILE ]]; then
             . "$ENV_FILE"
         fi
-        if [ -f settings.xml ]; then
+        if [[ -f settings.xml ]]; then
             MAVEN_USER_SETTINGS[1]="$PWD/settings.xml"
             break
         fi
@@ -56,7 +56,7 @@ mvn=mvn
 exit_status=$?
 message="Build succeeded."
 sound="/System/Library/Sounds/Ping.aiff"
-if [ $exit_status -ne 0 ]; then
+if [[ $exit_status -ne 0 ]]; then
     sound="/System/Library/Sounds/Basso.aiff"
     message="Build FAILED!"
 fi

@@ -13,8 +13,10 @@ function abort {
 function display_help {
 cat <<EOF
 usage: $(basename "$0") [--non-tls] [--trace] user@host:port
---non-tls      Use HTTP instead of HTTPS.
---trace        Trace the CURL command to standard output.
+-k|--insecure     Allow connections via HTTPS when the certificate
+                  chain is invalid.
+   --non-tls      Use HTTP instead of HTTPS.
+   --trace        Trace the CURL command to standard output.
 
 Returns an oauth token after prompting for a password.
 EOF
@@ -31,12 +33,16 @@ client_id=${client_id-"eef3485f-52b8-41b3-9d05-b051a9d5a2b0%3A*"}
 protocol=https
 while [ $# -gt 0 ]; do
     case $1 in
+        -k|--insecure)
+            insecure=--insecure
+            shift
+            ;;
         --non-tls)
             protocol=http
             shift
             ;;
         --trace)
-            trace=(--trace-ascii -)
+            trace="--trace-ascii -"
             shift
             ;;
         *@*:*)
@@ -61,7 +67,9 @@ function pass {
     builtin echo "password=$PASS"
 }
 
-response=$(curl ${trace-} -X POST \
+response=$(curl ${trace-} \
+                ${insecure-} \
+                -X POST \
                 -sq \
                 --data "type=username" \
                 --data "client_id=${client_id}" \

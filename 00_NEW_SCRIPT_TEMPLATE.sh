@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 set -o errexit -o pipefail -o nounset
 shopt -s extglob
 unset CDPATH
@@ -11,11 +11,11 @@ declare -ir ERR_CMD_NOT_FOUND=110
 declare -ir ERR_NON_EXISTENT_DIR=109
 # Use 64-108 for other exit codes.
 
-declare -r here=$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)
+declare -r here=$(cd -- "${BASH_SOURCE[0]%/*}" && pwd)
 
 display_help() {
 cat <<EOF
-usage: $(basename "$0") [opts]
+usage: ${0##*/} [opts]
 
 -h|--help        Displays usage information.
 
@@ -35,10 +35,27 @@ abort() {
     exit $err_code
 }
 
-# Handle help
-[[ ${1-} == @(--help|-h) ]] && { display_help; exit 0; }
+main() {
+                                                :; exit 101 # USE OR DELETE OPT PARSING
+    while (( $# > 0 )); do
+        case $1 in
+                                                :; exit 101 # REPLACE
+            -X|--X_X_X_X_X_X_)
+                x_x_x_x_x_x_=${2:?--X_X_X_X_X_X_ requires an argument}
+                shift
+                ;;
+            *)
+                                                :; exit 101 # ASSUMES OPTS ONLY
+                abort $ERR_BAD_CMD_LINE "Invalid option: $1"
+        esac
+        shift
+    done
 
-# Require argument
-# (( $# )) && abort $ERR_BAD_CMD_LINE #      << ADD MESSAGE
-# # or
-# require bar
+                                                :; exit 101 # IF OPT IS REQUIRED
+    require x_x_x_x_x_x_
+}
+
+ # Handle help
+[[ ${1-} == @(--help|-h) ]] && { display_help; exit 0; }
+[[ $# < 1 || ${1-} == @(--help|-h) ]] && { display_help; exit 0; }
+main "$@"

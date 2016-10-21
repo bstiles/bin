@@ -1,4 +1,0 @@
-Testsuite: com.martiansoftware.nailgun.TestLongUtils
-Tests run: 1, Failures: 0, Errors: 0, Time elapsed: 0.252 sec
-
-Testcase: testLongUtils took 0.21 sec

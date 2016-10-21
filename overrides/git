@@ -6,9 +6,9 @@ if [ -n "$(cd . 2>&1)" ]; then
     exit 1
 fi
 
-here=$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)
+here=$(cd "${BASH_SOURCE[0]%/*}" && pwd)
 
-ENV_FILE="$(basename "$0").env"
+ENV_FILE=${0##*/}.env
 
 pushes=()
 function push {
@@ -27,4 +27,4 @@ for x in "${pushes[@]}"; do
     popd > /dev/null
 done
 
-exec $(which -a git | grep -v "$here/$(basename "$0")" | head -1) "$@"
+exec $(which -a git | grep -v "$here/${0##*/}" | head -1) "$@"

@@ -1,9 +1,0 @@
-#!/bin/bash
-
-CLASSPATH_FILE=/Users/bstiles/.java/classpath
-
-if [ -f "$CLASSPATH_FILE" ]; then
-    . "$CLASSPATH_FILE"
-    echo "*** Using $CLASSPATH_FILE to extend CLASSPATH. ***"
-fi
-exec ~/bin/jython2.5.0/bin/jython "$@"
