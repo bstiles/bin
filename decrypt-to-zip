@@ -32,16 +32,16 @@ fi
 # "$@"
 
 #export JAVA_HOME=/System/Library/Java/JavaVirtualMachines/1.6.0.jdk/Contents/Home
-export JAVA_HOME=/Library/Java/JavaVirtualMachines/jdk1.8.0_92.jdk/Contents/Home
+export JAVA_HOME=/Volumes/Rikiki/jdk1.8.0_92.jdk/Contents/Home
 $JAVA_HOME/bin/java\
- \
--cp \
-/Volumes/PowerBook/bstiles/.m2/repository/net/bstiles/net.bstiles.common/1.0.0/net.bstiles.common-1.0.0.jar\
+    \
+    -cp \
+    /Volumes/PowerBook/bstiles/.m2/repository/net/bstiles/net.bstiles.common/1.0.0/net.bstiles.common-1.0.0.jar\
 :/Volumes/PowerBook/bstiles/.m2/repository/net/bstiles/net.bstiles.encryption/1.0.0/net.bstiles.encryption-1.0.0.jar\
 :/Volumes/PowerBook/bstiles/.m2/repository/net/bstiles/net.bstiles.dropbox/1.0.0/net.bstiles.dropbox-1.0.0.jar\
- \
-net.bstiles.dropbox.commandline.DecryptToZip\
- \
-/Volumes/ec2/pk-dropbox.der\
- \
-"$@"
+    \
+    net.bstiles.dropbox.commandline.DecryptToZip\
+    \
+    /Volumes/ec2/pk-dropbox.der\
+    \
+    "$@"

@@ -114,6 +114,57 @@ vSKdxR41Rv7fHun+yVr34YpNlPw3o6kauSZpwIWfaB98ZczgwF8ULQ7sqKZzgIJm
 EOF
 }
 
+irise() {
+    cat <<EOF
+-----BEGIN CERTIFICATE-----
+MIIDSDCCAjCgAwIBAgIQf5ciVvBrDqxD8hT2S0tbujANBgkqhkiG9w0BAQsFADAk
+MSIwIAYDVQQDDBlhenVzdy1hZDAxLmNvcnAuaXJpc2UuY29tMB4XDTE2MTIwMjE4
+MzcxMloXDTE3MTIwMjE4NTcxMlowJDEiMCAGA1UEAwwZYXp1c3ctYWQwMS5jb3Jw
+LmlyaXNlLmNvbTCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBAL/Y1X/U
+6rUocEdAD7mX84PcniED/NF3X0yZkZhWvdgnOQhrWJ8ED97HuXBZtkYJvIrR8hP6
+UFmI91rKV/D8gjhNblYs3JFFSxpCMgwz5Jl8oYb7pmt7/mqxp1oOGnEmDRxe6RnA
+meXmvLmjKWmDRAB7/HUqyY3H+irv5amFen8GQ9tdBf54VnaLrrDQmyQaIkyjw+d/
+ts3uoqO2VNLwXgZhBlqAB5MZaM+HA5j46MI5qXxMaI8RRc5eaN2YHlSPUHEvEPFa
+NNnKwseaY5ygYz8xB+tVMkLHczLF3LrzXtuiRiGGYLuLRjuPo8xND8o14sFZHSGU
+OLBwzeNonPa+2ucCAwEAAaN2MHQwDgYDVR0PAQH/BAQDAgWgMB0GA1UdJQQWMBQG
+CCsGAQUFBwMCBggrBgEFBQcDATAkBgNVHREEHTAbghlhenVzdy1hZDAxLmNvcnAu
+aXJpc2UuY29tMB0GA1UdDgQWBBRXiPUqtx4QNu7i0Ziq+oWXIM+s4DANBgkqhkiG
+9w0BAQsFAAOCAQEAqOPoiuR7jA3WEP9bZu2Pk/zWGHihbfQs1YG8Z23YGeYcDd0W
+fNku+mwrrPnRGzeMvpiFiOAj4kwlZKxMrc4dVaZg3j3aZgrzJ4RF+KoPAx+Y3iSu
+6vFAJA16QDHbS/eDVD9NFoJH7P+fHpfT/OGfzthnY5YXWuzDvr36MdqkTu2z1wdV
+0rzMdPYVjLn88zkHkhYGi8zZTa7ftimIUtah3qRSE5LCTs7xWAjWjT7SMB7I8h+A
+Y9SJD0v2J9YtLuN4VOc8xIKR4FZil/uLlu/eaZa8CrbHEQ9Ie9/+LgdhDXic/QCB
++QPVWy1AlTkfiM+0mm4y+romtsdzdo5CE2lucQ==
+-----END CERTIFICATE-----
+EOF
+}
+
+# 2017-02-02 bstiles: Created for LA-AD02
+irise2() {
+    cat <<EOF
+-----BEGIN CERTIFICATE-----
+MIIDPzCCAiegAwIBAgIQR1V5TNRZiY9PhfJINUT3QTANBgkqhkiG9w0BAQsFADAh
+MR8wHQYDVQQDDBZsYS1hZDAyLmNvcnAuaXJpc2UuY29tMB4XDTE3MDIwMTAzNDUy
+NVoXDTE4MDIwMTA0MDUyNVowITEfMB0GA1UEAwwWbGEtYWQwMi5jb3JwLmlyaXNl
+LmNvbTCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBANwJ4lHVbRniEcxx
+3THc4Y1cHE/ZVXMNVra4b/S4dSiur6nHXlPyJpAVN60oXC7u3XWimK1+f3DJt/zy
+WODD/cVasx/lARJ41tRFJcmPxxqnjIiXPjF7WGPXT4hl06m2jMT5l3QXjNk6kwK8
+CJ3gJ6JHfYOq5fq0dd4RKPv4hykWVqJTBqgrk7T5IKL5X2/8hbwWkYr9EEfbNon5
+ecCpxQ/q3xvgtlc2HxtPooPaokQ8pOpHkiF3oiJuYbfDluIikK2SMMAFTU03D+2j
+ObVDi1zBVPa27qX2vDFOLmAjr0PKEEen3olB/cYDfDn32ZLMzUmRj2J4bjBOuglc
+MMYxmpMCAwEAAaNzMHEwDgYDVR0PAQH/BAQDAgWgMB0GA1UdJQQWMBQGCCsGAQUF
+BwMCBggrBgEFBQcDATAhBgNVHREEGjAYghZsYS1hZDAyLmNvcnAuaXJpc2UuY29t
+MB0GA1UdDgQWBBTzDTAlDFwVT3L8PA2DJJZ2aDfNzjANBgkqhkiG9w0BAQsFAAOC
+AQEA2wBB/ojC3qhbvAMcodaw3dGgO2S2Lfp8bEj0VS0H5/Ml9hfgVn8AnlhUOFJ3
+F07IkaXZhK5FzpMY5lIyHWN15xrRvd5NKVWhw26PCWCEhlrWUMZJ6Z8AuJnqp2IZ
+ELa5PI0I4QmFeymJ4wDnDql+znwj1rW6sEVE8IS7V/1MiDaLDmBpN5eFirt+SpWI
+JG75P1cnux0eEUpLBmdSR2WYhYsCweGfXAXITId/oIqsGD7HHE2xZnd2+1etWhTa
+nC2Y0kIwWtno5CMVUrTa/4Nsdd032LyNkqs6Yi7EvnpmOttJPEvesFBEjrFWSgVv
+BzLwmwRbHw8dVG1CnBdiWt2BkQ==
+-----END CERTIFICATE-----
+EOF
+}
+
 import() {
     alias=${1:?Must specify alias.}
     sudo "$JAVA_HOME"/bin/keytool \
@@ -144,6 +195,14 @@ main() {
     exists lets_encrypt_authority_x3 || lets_encrypt_authority_x3 | import lets_encrypt_authority_x3
     # For my mitmproxy
     exists mitmproxy                 || mitmproxy                 | import mitmproxy
+    # For iRise AD
+    exists irise                     || irise                     | import irise
+    # For iRise AD LA-AD02 (on site)
+    exists irise2                    || irise2                    | import irise2
+    # My localhost DC certificate
+    if [[ -r ~/.dc-localhost.pem ]]; then
+        exists dc-localhost          || cat ~/.dc-localhost.pem   | import dc-localhost
+    fi
 }
 
  # Handle help

@@ -61,6 +61,5 @@ if [[ $exit_status -ne 0 ]]; then
     message="Build FAILED!"
 fi
 /usr/bin/afplay "$sound"
-growlnotify -m "$message"
 
 exit $exit_status
