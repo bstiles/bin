@@ -69,6 +69,6 @@ if [[ $exit_status -ne 0 ]]; then
     message="Lein FAILED!"
 fi
 /usr/bin/afplay "$sound"
-growlnotify -m "$message"
+#growlnotify -m "$message"
 
 exit $exit_status
