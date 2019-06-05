@@ -1,0 +1,9 @@
+#!/bin/bash
+
+here=$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)
+
+export JAVA_HOME=$(printf /Library/Java/JavaVirtualMachines/jdk1.8*/Contents/Home)
+export JAVA_CMD=$JAVA_HOME/bin/java
+$(which -a clojure | grep -v "$here/$(basename "$0")" | head -1) \
+    -J-Xmx8g \
+    "$@"

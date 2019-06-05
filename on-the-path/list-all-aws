@@ -1,0 +1,235 @@
+#!/usr/bin/env bash
+[ $BASH_VERSINFO -gt 3 ] || { echo "Bash 4+ is required."; exit 1; }
+
+set -o errexit -o pipefail -o nounset
+shopt -s extglob nullglob
+unset CDPATH
+
+declare -ir ERR_GENERAL=1
+declare -ir ERR_BAD_CMD_LINE=113
+declare -ir ERR_PRECONDITION_VIOLATED=112
+declare -ir ERR_MAX_LINK_DEPTH_EXCEEDED=111
+declare -ir ERR_CMD_NOT_FOUND=110
+declare -ir ERR_NON_EXISTENT_DIR=109
+# Use 64-100 for other exit codes.
+
+declare -r here=$(cd -- "${BASH_SOURCE[0]%/*}" && pwd)
+
+display_help() {
+cat <<EOF
+usage: ${0##*/} [opts]
+
+-p|--profile PROFILE  AWS profile used to list resources.
+-r|--region REGION    AWS region to inspect.
+-h|--help             Displays usage information.
+
+List all AWS resources.
+
+If --profile is not specified, AWS_DEFAULT_PROFILE is looked up in the
+environment.. If AWS_DEFAULT_PROFILE is not set, then
+AWS_ACCESS_KEY_ID, AWS_SECRET_ACCESS_KEY, and AWS_DEFAULT_REGION are
+looked up in the environment in lieu of using a profile. If none of
+these are set, the command will fail.
+EOF
+}
+require() {
+    eval [[ \$\{${1:?require was called without arguments!}-\} ]] \
+         '||' abort \$ERR_BAD_CMD_LINE \$\{2-\$1 is required!\} \$\{*:3\}
+}
+abort() {
+    local -i err_code=${1:?abort called without err_code}
+    (( err_code == ERR_BAD_CMD_LINE )) && {
+        display_help; echo; echo "-- ABORTED:"
+    }
+    shift; (( $# > 0 )) && echo "$*" >&2
+    exit $err_code
+}
+
+main() {
+    while (( $# > 0 )); do
+        case $1 in
+            -p|--profile)
+                local profile=${2:?--profile requires an argument.}
+                shift
+                ;;
+            -r|--region)
+                local region=${2:?--region requires an argument.}
+                shift
+                ;;
+            *)
+                abort $ERR_BAD_CMD_LINE "Invalid option: $1"
+        esac
+        shift
+    done
+
+    awscli="aws${profile:+ --profile $profile}${region:+ --region $REGION}"
+
+    declare -A commands
+
+    commands[acm]=list-certificates
+    commands[acm-pca]=list-certificate-authorities
+    commands[alexaforbusiness]=list-skills
+    commands[apigateway]=get-rest-apis
+    commands[application-autoscaling]=      # Not implemented
+    commands[appstream]=                    # Not implemented
+    commands[appsync]=                      # Not implemented
+    commands[athena]=                       # Not implemented
+    commands[autoscaling]=                  # Not implemented
+    commands[autoscaling-plans]=            # Not implemented
+    commands[batch]=                        # Not implemented
+    commands[budgets]=                      # Not implemented
+    commands[ce]=                           # Not implemented
+    commands[cloud9]=                       # Not implemented
+    commands[clouddirectory]=               # Not implemented
+    commands[cloudformation]=list-stacks,list-stack-sets
+    commands[cloudfront]=list-distributions
+    commands[cloudhsm]=                     # Not implemented
+    commands[cloudhsmv2]=                   # Not implemented
+    commands[cloudsearch]=                  # Not implemented
+    commands[cloudsearchdomain]=            # Not implemented
+    commands[cloudtrail]=describe-trails
+    commands[cloudwatch]=                   # Not implemented
+    commands[codebuild]=                    # Not implemented
+    commands[codecommit]=                   # Not implemented
+    commands[codepipeline]=                 # Not implemented
+    commands[codestar]=                     # Not implemented
+    commands[cognito-identity]=             # Not implemented
+    commands[cognito-idp]=                  # Not implemented
+    commands[cognito-sync]=                 # Not implemented
+    commands[comprehend]=                   # Not implemented
+    commands[configservice]=                # Not implemented
+    commands[configure]=                    # Not implemented
+    commands[connect]=                      # Not implemented
+    commands[cur]=                          # Not implemented
+    commands[datapipeline]=                 # Not implemented
+    commands[dax]=                          # Not implemented
+    commands[deploy]=                       # Not implemented
+    commands[devicefarm]=                   # Not implemented
+    commands[directconnect]=                # Not implemented
+    commands[discovery]=                    # Not implemented
+    commands[dlm]=                          # Not implemented
+    commands[dms]=                          # Not implemented
+    commands[ds]=                           # Not implemented
+    commands[dynamodb]=                     # Not implemented
+    commands[dynamodbstreams]=              # Not implemented
+    commands[ec2]=describe-instances,describe-key-pairs,describe-volumes,describe-vpcs
+    commands[ecr]=                          # Not implemented
+    commands[ecs]=                          # Not implemented
+    commands[efs]=                          # Not implemented
+    commands[eks]=                          # Not implemented
+    commands[elasticache]=                  # Not implemented
+    commands[elasticbeanstalk]=             # Not implemented
+    commands[elastictranscoder]=            # Not implemented
+    commands[elb]=                          # Not implemented
+    commands[elbv2]=                        # Not implemented
+    commands[emr]=                          # Not implemented
+    commands[es]=                           # Not implemented
+    commands[events]=                       # Not implemented
+    commands[firehose]=                     # Not implemented
+    commands[fms]=                          # Not implemented
+    commands[gamelift]=                     # Not implemented
+    commands[glacier]=                      # Not implemented
+    commands[glue]=                         # Not implemented
+    commands[greengrass]=                   # Not implemented
+    commands[guardduty]=                    # Not implemented
+    commands[health]=                       # Not implemented
+    commands[help]=                         # Not implemented
+    commands[history]=                      # Not implemented
+    commands[iam]=                          # Not implemented
+    commands[importexport]=                 # Not implemented
+    commands[inspector]=                    # Not implemented
+    commands[iot]=                          # Not implemented
+    commands[iot-jobs-data]=                # Not implemented
+    commands[iot1click-devices]=            # Not implemented
+    commands[iot1click-projects]=           # Not implemented
+    commands[iotanalytics]=                 # Not implemented
+    commands[kinesis]=                      # Not implemented
+    commands[kinesis-video-archived-media]= # Not implemented
+    commands[kinesis-video-media]=          # Not implemented
+    commands[kinesisanalytics]=             # Not implemented
+    commands[kinesisvideo]=                 # Not implemented
+    commands[kms]=                          # Not implemented
+    commands[lambda]=                       # Not implemented
+    commands[lex-models]=                   # Not implemented
+    commands[lex-runtime]=                  # Not implemented
+    commands[lightsail]=                    # Not implemented
+    commands[logs]=                         # Not implemented
+    commands[machinelearning]=              # Not implemented
+    commands[macie]=                        # Not implemented
+    commands[marketplace-entitlement]=      # Not implemented
+    commands[marketplacecommerceanalytics]= # Not implemented
+    commands[mediaconvert]=                 # Not implemented
+    commands[medialive]=                    # Not implemented
+    commands[mediapackage]=                 # Not implemented
+    commands[mediastore]=                   # Not implemented
+    commands[mediastore-data]=              # Not implemented
+    commands[mediatailor]=                  # Not implemented
+    commands[meteringmarketplace]=          # Not implemented
+    commands[mgh]=                          # Not implemented
+    commands[mobile]=                       # Not implemented
+    commands[mq]=                           # Not implemented
+    commands[mturk]=                        # Not implemented
+    commands[neptune]=                      # Not implemented
+    commands[opsworks]=                     # Not implemented
+    commands[opsworks-cm]=                  # Not implemented
+    commands[organizations]=                # Not implemented
+    commands[pi]=                           # Not implemented
+    commands[pinpoint]=                     # Not implemented
+    commands[polly]=                        # Not implemented
+    commands[pricing]=                      # Not implemented
+    commands[rds]=                          # Not implemented
+    commands[redshift]=                     # Not implemented
+    commands[rekognition]=                  # Not implemented
+    commands[resource-groups]=              # Not implemented
+    commands[resourcegroupstaggingapi]=     # Not implemented
+    commands[route53]=                      # Not implemented
+    commands[route53domains]=               # Not implemented
+    commands[s3]=                           # Not implemented
+    commands[s3api]=                        # Not implemented
+    commands[sagemaker]=                    # Not implemented
+    commands[sagemaker-runtime]=            # Not implemented
+    commands[sdb]=                          # Not implemented
+    commands[secretsmanager]=               # Not implemented
+    commands[serverlessrepo]=               # Not implemented
+    commands[servicecatalog]=               # Not implemented
+    commands[servicediscovery]=             # Not implemented
+    commands[ses]=                          # Not implemented
+    commands[shield]=                       # Not implemented
+    commands[signer]=                       # Not implemented
+    commands[sms]=                          # Not implemented
+    commands[snowball]=                     # Not implemented
+    commands[sns]=                          # Not implemented
+    commands[sqs]=                          # Not implemented
+    commands[ssm]=                          # Not implemented
+    commands[stepfunctions]=                # Not implemented
+    commands[storagegateway]=               # Not implemented
+    commands[sts]=                          # Not implemented
+    commands[support]=                      # Not implemented
+    commands[swf]=                          # Not implemented
+    commands[transcribe]=                   # Not implemented
+    commands[translate]=                    # Not implemented
+    commands[waf]=                          # Not implemented
+    commands[waf-regional]=                 # Not implemented
+    commands[workdocs]=                     # Not implemented
+    commands[workmail]=                     # Not implemented
+    commands[workspaces]=                   # Not implemented
+    commands[xray]=                         # Not implemented
+
+    for service in $(echo ${!commands[@]} | xargs -n 1 echo | sort); do
+        local -a command_array
+        IFS=, read -r -a command_array <<< ${commands[$service]}
+        if (( 0 < ${#command_array[*]} )); then
+            for command in "${command_array[@]}"; do
+                echo
+                echo '+---------------------------------------------------------------------'
+                echo "| $service $command"
+                echo '+---------------------------------------------------------------------'
+                $awscli $service $command
+            done
+        fi
+    done
+}
+
+# Handle help
+[[ ${1-} == @(--help|-h) ]] && { display_help; exit 0; }
+main "$@"

@@ -1,0 +1,38 @@
+#!/bin/bash
+shopt -s extglob
+set -o errexit
+
+if [ -n "$(cd . 2>&1)" ]; then
+    echo "Can't run ${BASH_SOURCE[0]} from a non-existent directory!"
+    exit 1
+fi
+
+here=$(cd "${BASH_SOURCE[0]%/*}" && pwd)
+
+ENV_FILE=${0##*/}.env
+
+pushes=()
+function push {
+    pushd "$1" > /dev/null
+    pushes=(${pushes[@]} ".")
+}
+
+until [[ $PWD == / ]]; do
+    push ..
+done
+if [[ -f $ENV_FILE ]]; then
+    . "$ENV_FILE"
+fi
+for x in "${pushes[@]}"; do
+    popd > /dev/null
+    if [[ -f $ENV_FILE ]]; then
+        . "$ENV_FILE"
+    fi
+done
+
+if [ -n "$JAVA_HOME" ]; then
+    JAVA=${JAVA-"$JAVA_HOME/bin/java"}
+else
+    JAVA=${JAVA-"$(which -a java | grep -v "$here/${0##*/}" | head -1)"}
+fi
+exec "$JAVA" $JAVA_OPTS "$@"

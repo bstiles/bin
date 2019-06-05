@@ -44,12 +44,12 @@ exit_status=$?
 # 2014-11-28 bstiles: For tmux usage
 # https://github.com/alloy/terminal-notifier/issues/115
 run=/usr/local/bin/reattach-to-user-namespace
-message="$(basename $1) succeeded. Rejoice!"
+: ${message:="$(basename $1) succeeded. Rejoice!"}
 sound="/System/Library/Sounds/Ping.aiff"
 notifier="$HOME/bin/Success.app/Contents/MacOS/terminal-notifier"
 if [ $exit_status -ne 0 ]; then
     sound="/System/Library/Sounds/Basso.aiff"
-    message="$(basename $1) FAILED. Fix it!"
+    : ${message:="$(basename $1) FAILED. Fix it!"}
     notifier="$HOME/bin/Failure.app/Contents/MacOS/terminal-notifier"
 fi
 [ "$audible" = "true" ] \

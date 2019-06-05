@@ -1,0 +1,5 @@
+#!/bin/bash
+
+export JAVA_HOME=$(printf /Library/Java/JavaVirtualMachines/jdk1.8*/Contents/Home)
+
+~/bin/on-the-path/lein "$@"

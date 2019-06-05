@@ -1,6 +1,8 @@
 #!/usr/bin/env bash
+[ $BASH_VERSINFO -gt 3 ] || { echo "Bash 4+ is required."; exit 1; }
+
 set -o errexit -o pipefail -o nounset
-shopt -s extglob
+shopt -s extglob nullglob
 unset CDPATH
 
 declare -ir ERR_GENERAL=1
@@ -9,7 +11,7 @@ declare -ir ERR_PRECONDITION_VIOLATED=112
 declare -ir ERR_MAX_LINK_DEPTH_EXCEEDED=111
 declare -ir ERR_CMD_NOT_FOUND=110
 declare -ir ERR_NON_EXISTENT_DIR=109
-# Use 64-108 for other exit codes.
+# Use 64-100 for other exit codes.
 
 declare -r here=$(cd -- "${BASH_SOURCE[0]%/*}" && pwd)
 

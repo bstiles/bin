@@ -1,0 +1,18 @@
+#!/usr/bin/env bash
+[ $BASH_VERSINFO -gt 3 ] || { echo "Bash 4+ is required."; exit 1; }
+
+
+while [[ $PWD != / && ! -x ./gradlew ]]; do
+    pushd .. >/dev/null
+done
+
+[[ -x ./gradlew ]] || {
+    echo "gradlew not found"
+    exit 1
+}
+
+_gradle_cmd=$PWD/gradlew
+
+popd >/dev/null 2>&1 
+
+exec "$_gradle_cmd" "$@"

@@ -36,10 +36,15 @@ abort() {
 }
 
 main() {
-    DEVICE=/dev/cu.usbmodem411
-    AVRDUDE_HOME=~/.arduinocdt/packages/arduino/tools/avrdude/6.3.0-arduino9
-    WORKSPACE_BUILD=~/eclipse-workspace/Tasty/build/"Arduino UNO"
-    $AVRDUDE_HOME/bin/_avrdude \
+    WORKSPACE=~/eclipse-workspace/Tasty
+    WORKSPACE_BUILD=~/eclipse-workspace/Tasty/build/Arduino_UNO
+    pushd $WORKSPACE
+    make clean all
+    popd
+
+    DEVICE=/dev/cu.usbmodem1451
+    AVRDUDE_HOME=/Users/bstiles/.arduinocdt/packages/arduino/tools/avrdude/6.3.0-arduino9
+    $AVRDUDE_HOME/bin/avrdude \
         -C$AVRDUDE_HOME/etc/avrdude.conf \
         -v \
         -patmega328p \
@@ -47,7 +52,7 @@ main() {
         -P$DEVICE \
         -b115200 \
         -D \
-        -Uflash:w:"$WORKSPACE_BUILD"/Tasty.hex:i
+        -Uflash:w:$WORKSPACE_BUILD/Tasty.hex:i
     if [ $? ]; then
         exec screen -L $DEVICE 9600
     fi
