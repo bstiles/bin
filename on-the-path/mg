@@ -15,24 +15,29 @@ declare -ir ERR_NON_EXISTENT_DIR=109
 
 declare -r here=$(cd -- "${BASH_SOURCE[0]%/*}" && pwd)
 
-declare -a roots=(~/bin ~/Config ~/Development ~/CCM ~/SmartKable)
+declare -A roots
+roots[bin]=~/bin
+roots[config]=~/Config
+roots[dev]=~/Development
+roots[ccm]=~/CCM
+roots[sk]=~/SmartKable
 declare maxdepth=${maxdepth:-5}
 
 display_help() {
 cat <<EOF
-usage: ${0##*/} [opts] [.]
+usage: ${0##*/} [opts] [key]
 
 -u|--upstream    Show upstream status.
 -h|--help        Displays usage information.
 
 Any other -* options are passed to \`mgitstatus\`.
 
-If \`.\` is the last argument, only show status from the current
-directory.
+If KEY is the last argument, only show status from the directory named
+KEY.
 
 Otherwise, show local Git status for repositories under:
 
-$(for x in "${roots[@]}"; do echo $x; done)
+$(for x in "${!roots[@]}"; do printf '%-27s [%s]\n' "${roots[$x]}" $x ; done)
 
 Does not show upstream status by default. Skips projects under \`_ext\`
 and \`Historical\`.
@@ -54,7 +59,7 @@ abort() {
 main() {
     local upstream=--no-upstream
     local -a args
-    local dir root status
+    local dir key root roots_key status
 
     while (( $# > 0 )); do
         case $1 in
@@ -65,28 +70,29 @@ main() {
                 args+=($1)
                 ;;
             *)
+                key=$1
                 break
         esac
         shift
     done
 
-    if [[ ${1-} == . ]]; then
-        "$here/mgitstatus" $upstream ${args[@]} . $maxdepth
-    else
-        for root in "${roots[@]}"; do
-            echo $(basename "$root")
-            echo '----------------------------------------------------------------------'
-            while read -r x; do
-                [[ $x =~ (_ext|Historical) ]] && continue
-                dir=$(dirname "$x")
-                cd "$dir"
-                status=$("$here/mgitstatus" -c $upstream ${args[@]} . 0)
-                if [[ ${status-} ]]; then
-                    printf '%20s %s\n' "$(basename "$dir")" "$status"
-                fi
-            done < <(find "$root" -maxdepth $maxdepth -type d -name .git)
-        done
-    fi
+    [[ ${key-} && ! ${roots[$key]-} ]] && abort $ERR_NON_EXISTENT_DIR "Unknown key: $key"
+
+    for roots_key in "${!roots[@]}"; do
+        [[ ${key-} && $key != $roots_key ]] && continue
+        root=${roots[$roots_key]}
+        echo $(basename "$root")
+        echo '----------------------------------------------------------------------'
+        while read -r x; do
+            [[ $x =~ (_ext|Historical) ]] && continue
+            dir=$(dirname "$x")
+            cd "$dir"
+            status=$("$here/mgitstatus" -c $upstream ${args[@]} . 0)
+            if [[ ${status-} ]]; then
+                printf '%20s %s\n' "$(basename "$dir")" "$status"
+            fi
+        done < <(find "$root" -maxdepth $maxdepth -type d -name .git)
+    done
 }
 
 # Handle help
