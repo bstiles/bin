@@ -29,14 +29,14 @@ declare maxdepth=${maxdepth:-5}
 
 display_help() {
 cat <<EOF
-usage: ${0##*/} [opts] [key]
+usage: ${0##*/} [opts] [key [key..]]
 
 -u|--upstream    Show upstream status.
 -h|--help        Displays usage information.
 
 Any other -* options are passed to \`mgitstatus\`.
 
-If KEY is the last argument, only show status from the directory named
+If keys is the last argument, only show status from the directory named
 KEY.
 
 Otherwise, show local Git status for repositories under:
@@ -60,10 +60,20 @@ abort() {
     exit $err_code
 }
 
+contains_element () {
+  local e match=$1
+  shift
+  for x in "$@"; do
+      [[ $x == $match ]] && return 0
+  done
+  return 1
+}
+
 main() {
     local upstream=--no-upstream
     local -a args
-    local dir key root roots_key status
+    local -a keys
+    local dir root roots_key status
 
     while (( $# > 0 )); do
         case $1 in
@@ -74,16 +84,18 @@ main() {
                 args+=($1)
                 ;;
             *)
-                key=$1
-                break
+                keys+=($1)
+                ;;
         esac
         shift
     done
 
-    [[ ${key-} && ! ${roots[$key]-} ]] && abort $ERR_NON_EXISTENT_DIR "Unknown key: $key"
+    for x in ${keys[@]-}; do
+        [[ ! ${roots[$x]-} ]] && abort $ERR_NON_EXISTENT_DIR "Unknown key: $x"
+    done
 
     for roots_key in "${order[@]}"; do
-        [[ ${key-} && $key != $roots_key ]] && continue
+        [[ ${keys[@]-} ]] && ! contains_element $roots_key "${keys[@]}" && continue
         root=${roots[$roots_key]}
         echo $(basename "$root")
         echo '----------------------------------------------------------------------'
