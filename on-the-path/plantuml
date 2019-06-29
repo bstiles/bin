@@ -62,6 +62,8 @@ main() {
         shift
     done
 
+    : ${type:=svg}
+
     if [[ ${watching-} == true ]]; then
         while [[ ${1-} ]]; do
             watch "$1"&
@@ -75,7 +77,7 @@ main() {
              -XX:+UseEpsilonGC \
              -Xmx512m \
              -jar ~/Config/emacs-config/lisp/org-extensions/plantuml.jar \
-             -tsvg \
+             -t$type \
              -verbose \
              -o "$dir" \
              "$1"
@@ -83,7 +85,7 @@ main() {
         mv "$dir"/* "$(dirname "$1")"
         rmdir "$dir"
         if [[ ! ${generate_only-} ]]; then
-            open -ga Safari "${1//.*}"{,_*}.svg
+            open -ga Safari "${1//.*}"{,_*}.$type
         fi
     fi
 }

@@ -38,22 +38,33 @@ banner="true"
 
 set -o nounset
 
+declare -i begin end NOTIFY_IGNORE_THRESHOLD_MS
+
+begin=$(($(gdate +%s%N)))
 "$@"
 exit_status=$?
+end=$(($(gdate +%s%N)))
+
+if [[ ${NOTIFY_IGNORE_THRESHOLD_MS-} ]]; then
+    if (( $NOTIFY_IGNORE_THRESHOLD_MS * 1000000 > $end - $begin )); then
+        exit $exit_status
+    fi
+fi
 
 # 2014-11-28 bstiles: For tmux usage
 # https://github.com/alloy/terminal-notifier/issues/115
 run=/usr/local/bin/reattach-to-user-namespace
 : ${message:="$(basename $1) succeeded. Rejoice!"}
-sound="/System/Library/Sounds/Ping.aiff"
+sound=(--volume 1 /System/Library/Sounds/Ping.aiff)
 notifier="$HOME/bin/Success.app/Contents/MacOS/terminal-notifier"
 if [ $exit_status -ne 0 ]; then
-    sound="/System/Library/Sounds/Basso.aiff"
-    : ${message:="$(basename $1) FAILED. Fix it!"}
+    sound=(--volume 3 /System/Library/Sounds/Basso.aiff)
+    : ${failure_message:="$(basename $1) FAILED. Fix it!"}
+    message=$failure_message
     notifier="$HOME/bin/Failure.app/Contents/MacOS/terminal-notifier"
 fi
 [ "$audible" = "true" ] \
-  && afplay "$sound"
+  && afplay "${sound[@]}"
 [ "$banner" = "true" ] \
   && "$run" "$notifier" -title "Build" -group "Build Result" -message "$message" 2>&1 > /dev/null
 

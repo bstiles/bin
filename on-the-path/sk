@@ -74,7 +74,7 @@ main() {
             cat
         } | exec bash
     else
-        exec bash
+        exec bash --init-file ~/SmartKable/Config/sk${1:+-$1}.env
     fi
 }
 

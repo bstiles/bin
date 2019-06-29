@@ -1,0 +1,87 @@
+#!/usr/bin/env bash
+[ $BASH_VERSINFO -gt 3 ] || { echo "Bash 4+ is required."; exit 1; }
+
+set -o errexit -o pipefail -o nounset
+shopt -s extglob nullglob
+unset CDPATH
+
+declare -ir ERR_GENERAL=1
+declare -ir ERR_BAD_CMD_LINE=113
+declare -ir ERR_PRECONDITION_VIOLATED=112
+declare -ir ERR_MAX_LINK_DEPTH_EXCEEDED=111
+declare -ir ERR_CMD_NOT_FOUND=110
+declare -ir ERR_NON_EXISTENT_DIR=109
+# Use 64-100 for other exit codes.
+
+declare -r here=$(cd -- "${BASH_SOURCE[0]%/*}" && pwd)
+
+declare -a roots=(~/bin ~/Config ~/Development ~/CCM ~/SmartKable)
+declare maxdepth=${maxdepth:-5}
+
+display_help() {
+cat <<EOF
+usage: ${0##*/} [opts]
+
+-u|--upstream    Show upstream status.
+-h|--help        Displays usage information.
+
+Any other -* options are passed to \`mgitstatus\`.
+
+Show local Git status for repositories under:
+
+$(for x in "${roots[@]}"; do echo $x; done)
+
+Does not show upstream status by default. Skips projects under \`_ext\`
+and \`Historical\`.
+EOF
+}
+require() {
+    eval [[ \$\{${1:?require was called without arguments!}-\} ]] \
+         '||' abort \$ERR_BAD_CMD_LINE \$\{2-\$1 is required!\} \$\{*:3\}
+}
+abort() {
+    local -i err_code=${1:?abort called without err_code}
+    (( err_code == ERR_BAD_CMD_LINE )) && {
+        display_help; echo; echo "-- ABORTED:"
+    }
+    shift; (( $# > 0 )) && echo "$*" >&2
+    exit $err_code
+}
+
+main() {
+    local upstream=--no-upstream
+    local -a args
+    local dir root status
+
+    while (( $# > 0 )); do
+        case $1 in
+            -u|--upstream)
+                upstream=
+                ;;
+            -*)
+                args+=($1)
+                ;;
+            *)
+                abort $ERR_BAD_CMD_LINE "Invalid option: $1"
+        esac
+        shift
+    done
+
+    for root in "${roots[@]}"; do
+        echo $(basename "$root")
+        echo '----------------------------------------------------------------------'
+        while read -r x; do
+            [[ $x =~ (_ext|Historical) ]] && continue
+            dir=$(dirname "$x")
+            cd "$dir"
+            status=$("$here/mgitstatus" -c $upstream ${args[@]} . 0)
+            if [[ ${status-} ]]; then
+                printf '%20s %s\n' "$(basename "$dir")" "$status"
+            fi
+        done < <(find "$root" -maxdepth $maxdepth -type d -name .git)
+    done
+}
+
+# Handle help
+[[ ${1-} == @(--help|-h) ]] && { display_help; exit 0; }
+main "$@"
