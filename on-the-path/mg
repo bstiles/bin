@@ -15,12 +15,16 @@ declare -ir ERR_NON_EXISTENT_DIR=109
 
 declare -r here=$(cd -- "${BASH_SOURCE[0]%/*}" && pwd)
 
-declare -A roots
-roots[bin]=~/bin
-roots[config]=~/Config
-roots[dev]=~/Development
-roots[ccm]=~/CCM
-roots[sk]=~/SmartKable
+declare -A roots;                declare -a order;
+roots[bin]=~/bin                 order+=(bin)
+roots[config]=~/Config           order+=(config)
+roots[contracting]=~/Contracting order+=(contracting)
+roots[ipt]=~/IPT                 order+=(ipt)
+roots[org]=~/org                 order+=(org)
+roots[st]=~/Stiles\ Technologies order+=(st)
+roots[dev]=~/Development         order+=(dev)
+roots[ccm]=~/CCM                 order+=(ccm)
+roots[sk]=~/SmartKable           order+=(sk)
 declare maxdepth=${maxdepth:-5}
 
 display_help() {
@@ -37,7 +41,7 @@ KEY.
 
 Otherwise, show local Git status for repositories under:
 
-$(for x in "${!roots[@]}"; do printf '%-27s [%s]\n' "${roots[$x]}" $x ; done)
+$(for x in "${order[@]}"; do printf '%-27s [%s]\n' "${roots[$x]}" $x ; done)
 
 Does not show upstream status by default. Skips projects under \`_ext\`
 and \`Historical\`.
@@ -78,7 +82,7 @@ main() {
 
     [[ ${key-} && ! ${roots[$key]-} ]] && abort $ERR_NON_EXISTENT_DIR "Unknown key: $key"
 
-    for roots_key in "${!roots[@]}"; do
+    for roots_key in "${order[@]}"; do
         [[ ${key-} && $key != $roots_key ]] && continue
         root=${roots[$roots_key]}
         echo $(basename "$root")
@@ -89,7 +93,7 @@ main() {
             cd "$dir"
             status=$("$here/mgitstatus" -c $upstream ${args[@]} . 0)
             if [[ ${status-} ]]; then
-                printf '%20s %s\n' "$(basename "$dir")" "$status"
+                printf '%23s %s\n' "$(basename "$dir")" "$status"
             fi
         done < <(find "$root" -maxdepth $maxdepth -type d -name .git)
     done
