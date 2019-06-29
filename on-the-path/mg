@@ -20,14 +20,17 @@ declare maxdepth=${maxdepth:-5}
 
 display_help() {
 cat <<EOF
-usage: ${0##*/} [opts]
+usage: ${0##*/} [opts] [.]
 
 -u|--upstream    Show upstream status.
 -h|--help        Displays usage information.
 
 Any other -* options are passed to \`mgitstatus\`.
 
-Show local Git status for repositories under:
+If \`.\` is the last argument, only show status from the current
+directory.
+
+Otherwise, show local Git status for repositories under:
 
 $(for x in "${roots[@]}"; do echo $x; done)
 
@@ -62,24 +65,28 @@ main() {
                 args+=($1)
                 ;;
             *)
-                abort $ERR_BAD_CMD_LINE "Invalid option: $1"
+                break
         esac
         shift
     done
 
-    for root in "${roots[@]}"; do
-        echo $(basename "$root")
-        echo '----------------------------------------------------------------------'
-        while read -r x; do
-            [[ $x =~ (_ext|Historical) ]] && continue
-            dir=$(dirname "$x")
-            cd "$dir"
-            status=$("$here/mgitstatus" -c $upstream ${args[@]} . 0)
-            if [[ ${status-} ]]; then
-                printf '%20s %s\n' "$(basename "$dir")" "$status"
-            fi
-        done < <(find "$root" -maxdepth $maxdepth -type d -name .git)
-    done
+    if [[ ${1-} == . ]]; then
+        "$here/mgitstatus" $upstream ${args[@]} . $maxdepth
+    else
+        for root in "${roots[@]}"; do
+            echo $(basename "$root")
+            echo '----------------------------------------------------------------------'
+            while read -r x; do
+                [[ $x =~ (_ext|Historical) ]] && continue
+                dir=$(dirname "$x")
+                cd "$dir"
+                status=$("$here/mgitstatus" -c $upstream ${args[@]} . 0)
+                if [[ ${status-} ]]; then
+                    printf '%20s %s\n' "$(basename "$dir")" "$status"
+                fi
+            done < <(find "$root" -maxdepth $maxdepth -type d -name .git)
+        done
+    fi
 }
 
 # Handle help
