@@ -31,6 +31,7 @@ display_help() {
 cat <<EOF
 usage: ${0##*/} [opts] [key [key..]]
 
+-r|--show-remote Show remote repository (only).
 -u|--upstream    Show upstream status.
 -h|--help        Displays usage information.
 
@@ -43,8 +44,8 @@ Otherwise, show local Git status for repositories under:
 
 $(for x in "${order[@]}"; do printf '%-27s [%s]\n' "${roots[$x]}" $x ; done)
 
-Does not show upstream status by default. Skips projects under \`_ext\`
-and \`Historical\`.
+Does not show upstream status by default. Skips projects under \`_ext\`,
+\`_explore\`, and \`Historical\`.
 EOF
 }
 require() {
@@ -73,10 +74,13 @@ main() {
     local upstream=--no-upstream
     local -a args
     local -a keys
-    local dir root roots_key status
+    local dir no_remote remote root roots_key show_remote status
 
     while (( $# > 0 )); do
         case $1 in
+            -r|--show-remote)
+                show_remote=true
+                ;;
             -u|--upstream)
                 upstream=
                 ;;
@@ -100,12 +104,23 @@ main() {
         echo $(basename "$root")
         echo '----------------------------------------------------------------------'
         while read -r x; do
-            [[ $x =~ (_ext|Historical) ]] && continue
+            [[ $x =~ (_ext|_explore|Historical) ]] && continue
             dir=$(dirname "$x")
             cd "$dir"
-            status=$("$here/mgitstatus" -c $upstream ${args[@]} . 0)
-            if [[ ${status-} ]]; then
-                printf '%23s %s\n' "$(basename "$dir")" "$status"
+            if [[ ${show_remote-} ]]; then
+                no_remote=true
+                while read -r remote; do
+                    no_remote=
+                    printf '%23s: %s\n' "$(basename "$dir")" "$remote"
+                done < <(git remote -v)
+                if [[ ${no_remote-} ]]; then
+                    printf '%23s: -\n' "$(basename "$dir")"
+                fi
+            else
+                status=$("$here/mgitstatus" -c $upstream ${args[@]} . 0)
+                if [[ ${status-} ]]; then
+                    printf '%23s %s\n' "$(basename "$dir")" "$status"
+                fi
             fi
         done < <(find "$root" -maxdepth $maxdepth -type d -name .git)
     done
