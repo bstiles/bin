@@ -1,0 +1,12 @@
+#!/usr/bin/env bash
+
+[[ 1 == $(ls -1d /Library/Java/JavaVirtualMachines/graalvm* | wc | awk '{print $1;}') ]] \
+    || {
+    echo "Looks like graal has been updated. Update ~/bin/on-the-path/graalvm"
+    exit 1
+}
+
+export JAVA_HOME=/Library/Java/JavaVirtualMachines/graalvm-ce-19.1.1/Contents/Home
+export PATH=/Library/Java/JavaVirtualMachines/graalvm-ce-19.1.1/Contents/Home/bin:"$PATH"
+
+exec "$@"
