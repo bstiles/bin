@@ -1,0 +1,9 @@
+#!/bin/bash
+
+here=$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)
+
+if [[ -x /Applications/Emacs.app/Contents/MacOS/Emacs ]]; then
+    exec /Applications/Emacs.app/Contents/MacOS/Emacs -nw "$@"
+else
+    exec $(which -a emacs | grep -v "$here/$(basename "$0")" | head -1) -nw "$@"
+fi
