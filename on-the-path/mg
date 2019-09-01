@@ -101,8 +101,14 @@ main() {
     for roots_key in "${order[@]}"; do
         [[ ${keys[@]-} ]] && ! contains_element $roots_key "${keys[@]}" && continue
         root=${roots[$roots_key]}
-        echo $(basename "$root")
-        echo '----------------------------------------------------------------------'
+        if [[ -d $root ]]; then
+            echo $(basename "$root")
+            echo '----------------------------------------------------------------------'
+        else
+            echo "$(basename "$root") does not exist"
+            echo '- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -'
+            continue
+        fi
         while read -r x; do
             [[ $x =~ (_ext|_explore|Historical) ]] && continue
             dir=$(dirname "$x")
