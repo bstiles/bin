@@ -19,7 +19,7 @@ display_help() {
 cat <<EOF
 usage: ${0##*/} [opts]
 
--h|--help        Displays usage information.
+-h|--help        Display usage information.
 
 DESCRIPTION                                        << EDIT DESCRIPTION
 EOF
