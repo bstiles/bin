@@ -1,0 +1,12 @@
+#!/usr/bin/env bash
+
+[[ 1 == $(ls -1d /Library/Java/JavaVirtualMachines/jdk1.8.* | wc | awk '{print $1;}') ]] \
+    || {
+    echo "Looks like Java 8 has been updated. Update ~/bin/on-the-path/with-java8"
+    exit 1
+}
+
+export JAVA_HOME=/Library/Java/JavaVirtualMachines/jdk1.8.*/Contents/Home
+export PATH=/Library/Java/JavaVirtualMachines/jdk1.8.*/Contents/Home/bin:"$PATH"
+
+exec "$@"
