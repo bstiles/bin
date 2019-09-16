@@ -2,11 +2,11 @@
 
 [[ 1 == $(ls -1d /Library/Java/JavaVirtualMachines/graalvm* | wc | awk '{print $1;}') ]] \
     || {
-    echo "Looks like graal has been updated. Update ~/bin/on-the-path/graalvm"
+    echo "Looks like graal has been updated. Update ~/bin/on-the-path/with-graalvm"
     exit 1
 }
 
-export JAVA_HOME=/Library/Java/JavaVirtualMachines/graalvm-ce-19.1.1/Contents/Home
-export PATH=/Library/Java/JavaVirtualMachines/graalvm-ce-19.1.1/Contents/Home/bin:"$PATH"
+export JAVA_HOME=/Library/Java/JavaVirtualMachines/graalvm-ce-19.2.0/Contents/Home
+export PATH=/Library/Java/JavaVirtualMachines/graalvm-ce-19.2.0/Contents/Home/bin:"$PATH"
 
 exec "$@"
