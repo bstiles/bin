@@ -47,16 +47,41 @@ abort() {
 }
 
 main() {
+    local tz
+
     if [[ $(uname -s) = Darwin ]]; then
-        docker run \
-               --rm \
-               --interactive \
-               --tty \
-               -v $HOME/.lnav:/root/.lnav \
-               -v $HOME:/Users/bstiles \
-               -v /tmp:/tmp \
-               -e TERM=screen-256color \
-               lnav "$@"
+        if [[ $(tty) == 'not a tty' ]]; then
+            exec "$here"/lnav-0.8.4-macos "$@"
+        else
+            local -a args
+            while (( $# > 0 )); do
+                case $1 in
+                    -[hHiuCVarRtnq])
+                        args+=("$1")
+                        ;;
+                    -[Idwcf])
+                        args+=("$1" "$2")
+                        shift
+                        ;;
+                    /*)
+                        args+=("$1")
+                        ;;
+                    *)
+                        args+=("$PWD/$1")
+                        ;;
+                esac
+                shift
+            done
+            docker run \
+                   --rm \
+                   --interactive \
+                   --tty \
+                   -v $HOME/.lnav:/root/.lnav \
+                   -v $HOME:/Users/bstiles \
+                   -v /tmp:/tmp \
+                   -e TERM=screen-256color \
+                   lnav "${args[@]}"
+        fi
     else
         exec $(which -a lnav | grep -v "$here/${0##*/}" | head -1) "$@"
     fi
