@@ -6,7 +6,7 @@
     exit 1
 }
 
-export JAVA_HOME=/Library/Java/JavaVirtualMachines/graalvm-ce-19.2.0/Contents/Home
-export PATH=/Library/Java/JavaVirtualMachines/graalvm-ce-19.2.0/Contents/Home/bin:"$PATH"
+export JAVA_HOME=/Library/Java/JavaVirtualMachines/graalvm-ce-19.2.0.1/Contents/Home
+export PATH=/Library/Java/JavaVirtualMachines/graalvm-ce-19.2.0.1/Contents/Home/bin:"$PATH"
 
 exec "$@"
