@@ -11,6 +11,7 @@ declare -ir ERR_PRECONDITION_VIOLATED=112
 declare -ir ERR_MAX_LINK_DEPTH_EXCEEDED=111
 declare -ir ERR_CMD_NOT_FOUND=110
 declare -ir ERR_NON_EXISTENT_DIR=109
+declare -ir ERR_FILE_NOT_FOUND=108
 # Use 64-100 for other exit codes.
 
 declare -r here=$(cd -- "${BASH_SOURCE[0]%/*}" && pwd)
@@ -23,10 +24,6 @@ usage: ${0##*/} [opts]
 
 DESCRIPTION                                        << EDIT DESCRIPTION
 EOF
-}
-require() {
-    eval [[ \$\{${1:?require was called without arguments!}-\} ]] \
-         '||' abort \$ERR_BAD_CMD_LINE \$\{2-\$1 is required!\} \$\{*:3\}
 }
 abort() {
     local -i err_code=${1:?abort called without err_code}
@@ -42,8 +39,8 @@ main() {
     while (( $# > 0 )); do
         case $1 in
                                                 :; exit 101 # REPLACE
-            -X|--X_X_X_X_X_X_)
-                x_x_x_x_x_x_=${2:?--X_X_X_X_X_X_ requires an argument}
+            -X|--XxXxXxXxXxXx)
+                xxxxxxxxxxxx=${2:?--XxXxXxXxXxXx requires an argument}
                 shift
                 ;;
             *)
@@ -54,7 +51,7 @@ main() {
     done
 
                                                 :; exit 101 # IF OPT IS REQUIRED
-    require x_x_x_x_x_x_
+    : ${xxxxxxxxxxxx:?}
 }
 
  # Handle help
