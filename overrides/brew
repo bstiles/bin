@@ -2,5 +2,7 @@
 
 here=$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)
 
-export HOMEBREW_GITHUB_API_TOKEN=$(cat ~/.github_token_bstiles)
+if [[ -f ~/.github_token_bstiles ]]; then
+    export HOMEBREW_GITHUB_API_TOKEN=$(cat ~/.github_token_bstiles)
+fi
 $(which -a brew | grep -v "$here/$(basename "$0")" | head -1) "$@"
