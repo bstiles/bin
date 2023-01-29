@@ -15,17 +15,20 @@ declare -ir ERR_NON_EXISTENT_DIR=109
 
 declare -r here=$(cd -- "${BASH_SOURCE[0]%/*}" && pwd)
 
-declare -A roots;                declare -a order;
-roots[bin]=~/bin                 order+=(bin)
-roots[config]=~/Config           order+=(config)
-roots[contracting]=~/Contracting order+=(contracting)
-roots[ipt]=~/IPT                 order+=(ipt)
-roots[org]=~/org                 order+=(org)
-roots[st]=~/Stiles\ Technologies order+=(st)
-roots[monkey-config]=~/.monkey   order+=(monkey-config)
-roots[dev]=~/Development         order+=(dev)
-roots[ccm]=~/CCM                 order+=(ccm)
-roots[sk]=~/SmartKable           order+=(sk)
+declare -A roots;                            declare -a order;
+roots[bin]=~/bin                             order+=(bin)
+roots[config]=~/Config                       order+=(config)
+roots[mathematica]=~/Library/Mathematica     order+=(mathematica)
+roots[contracting]=~/Contracting             order+=(contracting)
+roots[ipt]=~/IPT                             order+=(ipt)
+roots[org]=~/org                             order+=(org)
+roots[st]=~/Stiles\ Technologies             order+=(st)
+roots[monkey]=~/Development/Projects/Monkey  order+=(monkey)
+roots[monkey-config]=~/.monkey               order+=(monkey-config)
+roots[dev]=~/Development                     order+=(dev)
+roots[ccm]=~/CCM                             order+=(ccm)
+roots[sk]=~/SmartKable                       order+=(sk)
+
 declare maxdepth=${maxdepth:-5}
 
 display_help() {

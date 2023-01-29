@@ -20,7 +20,7 @@ display_help() {
 cat <<EOF
 usage: ${0##*/} [opts]
 
--h|--help        Display usage information.
+-h|--help        Display usage information
 
 DESCRIPTION                                        << EDIT DESCRIPTION
 EOF
@@ -54,7 +54,7 @@ main() {
     : ${xxxxxxxxxxxx:?}
 }
 
- # Handle help
+# Handle help
 [[ ${1-} == @(--help|-h) ]] && { display_help; exit 0; }
 [[ $# < 1 || ${1-} == @(--help|-h) ]] && { display_help; exit 0; }
 main "$@"

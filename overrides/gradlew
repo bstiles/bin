@@ -13,6 +13,6 @@ done
 
 _gradle_cmd=$PWD/gradlew
 
-popd >/dev/null 2>&1 
+popd >/dev/null 2>&1
 
-exec "$_gradle_cmd" "$@"
+exec ~/bin/notify-result "$_gradle_cmd" "$@"
